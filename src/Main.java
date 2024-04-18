@@ -1,17 +1,25 @@
+import java.util.Random;
+
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
-        // Press Alt+Enter with your caret at the highlighted text to see how
-        // IntelliJ IDEA suggests fixing it.
-        System.out.printf("Hello and welcome!");
+        Rectangle boundary = new Rectangle(0, 0, 100, 100);
+        int capacity = 4;
+        QuadTree qt = new QuadTree(boundary, capacity, 0);
 
-        // Press Shift+F10 or click the green arrow button in the gutter to run the code.
-        for (int i = 1; i <= 5; i++) {
-
-            // Press Shift+F9 to start debugging your code. We have set one breakpoint
-            // for you, but you can always add more by pressing Ctrl+F8.
-            System.out.println("i = " + i);
+        //Generate some random place and insert it into the Quadtree
+        Random rnd = new Random(System.currentTimeMillis());
+        String[] services = {"Hotel", "Coffee", "Restaurant", "ATMs", "Gas Station", "Hospital"};
+        for(int i = 0; i < 5; i++){
+            double x = rnd.nextDouble() * 50;
+            double y = rnd.nextDouble() * 50;
+            String service = services[rnd.nextInt(services.length) - 1];
+            Point p = new Point(x, y);
+            Place place = new Place(p, service);
+            qt.insert(place);
         }
+        System.out.println("Insert successfully!");
+
     }
 }
