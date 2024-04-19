@@ -1,12 +1,12 @@
-import java.util.ArrayList;
 import java.util.Random;
 
 // Press Shift twice to open the Search Everywhere dialog and type `show whitespaces`,
 // then press Enter. You can now see whitespace characters in your code.
 public class Main {
     public static void main(String[] args) {
+        Runtime runtime = Runtime.getRuntime();
         Rectangle boundary = new Rectangle(10000000/2, 10000000/2, 10000000, 10000000);
-        int capacity = 10000;
+        int capacity = 500000;
         // QuadTree qt = new QuadTree(boundary, capacity, 0);
         QuadTree qt = new QuadTree(boundary, capacity);
 
@@ -24,10 +24,8 @@ public class Main {
         }
         long endTime = System.currentTimeMillis();
         System.out.println("Time taken: " + (endTime - startTime) + " ms");
-
-        ArrayList<Place> places = qt.getAllPoints();
-        System.out.println("Places: " + places.size());
-
+        long memoryUsed = (runtime.totalMemory() - runtime.freeMemory()) / 1024 / 1024; // Convert to megabytes
+        System.out.println("Memory Used: " + memoryUsed + " MB");
         System.out.println("Insert successfully!");
     }
 }
