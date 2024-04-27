@@ -161,7 +161,7 @@ public class QuadTree {
         return found;
     }
 
-    public Place editePLace(double x, double y) {
+    public Place editPLace(double x, double y) {
         ArrayList<Place> foundPlaces = search(new Rectangle(x, y, 0, 0), null, null, 1);
         if (foundPlaces.size() == 0) {
             System.out.println("No place found!");

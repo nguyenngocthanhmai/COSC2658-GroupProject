@@ -86,7 +86,7 @@ public class GUI {
                     double x = sc.nextDouble();
                     System.out.print("Please enter the y coordinate: ");
                     double y = sc.nextDouble();
-                    qt.editePLace(x, y);
+                    qt.editPLace(x, y);
                     break;
                 }
                 case "5":
