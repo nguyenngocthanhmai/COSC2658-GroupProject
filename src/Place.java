@@ -1,34 +1,51 @@
 public class Place {
-    String service;
-    Point point;
+    ArrayList<ServiceType> service;
+    double x;
+    double y;
 
-    public Place(Point point, String service){
-        this.point = point;
-        this. service = service;
+    public Place(ArrayList<ServiceType> service, double x, double y) {
+        this.service = service;
+        this.x = x;
+        this.y = y;
     }
 
-    public String getService(){
+    public ArrayList<ServiceType> getService() {
         return service;
     }
 
-    public Point getCoordinate(){
-        return point;
-    }
-
-    //not implement yet
-    public boolean editServices(){
+    // not implement yet
+    public boolean editServices() {
         return false;
     }
 
-    //not implement yet
-    public  boolean removeService(){
+    // not implement yet
+    public boolean removeService() {
+        return false;
+    }
+
+    public boolean addService() {
         return false;
     }
 
     @Override
     public String toString() {
-        return "place = {" +
-                "type of service: " + service + ", " +
-                point;
+        StringBuilder sb = new StringBuilder();
+        sb.append("Place: service = ");
+        for (int i =0; i<service.size(); i++){
+            sb.append(service.get(i));
+            if (i != service.size() - 1) {
+                sb.append(", ");
+            }
+        }
+        sb.append(", x = ").append(x);
+        sb.append(", y = ").append(y);
+        return sb.toString();
+    }
+
+    public boolean compare(double a, double b) {
+        if (Double.compare(a, x) == 0 && Double.compare(b, y) == 0) {
+            return true;
+        }
+        return false;
     }
 }

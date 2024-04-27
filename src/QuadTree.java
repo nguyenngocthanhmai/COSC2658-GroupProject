@@ -1,9 +1,8 @@
-import java.util.ArrayList;
+import java.util.Random;
 
 public class QuadTree {
     private int capacity;
-    private int size;
-    private ArrayList<Place> points;
+    public ArrayList<Place> points;
     private boolean isDivided;
     private Rectangle bounds;
 
@@ -14,40 +13,53 @@ public class QuadTree {
     private QuadTree lastInsertedLeaf = null;
     private int depth;
 
-    public QuadTree(Rectangle bounds, int capacity){
+    public QuadTree(Rectangle bounds, int capacity) {
         this.bounds = bounds;
         this.capacity = capacity;
-        points = new ArrayList<>();
+        points = new ArrayList<Place>(capacity);
+        this.depth = 0;
     }
 
-    public ArrayList<Place> getChildren(){
-        return points;
+    public static QuadTree initialize(int numberOfPlace){
+        Rectangle boundary = new Rectangle(10000000 / 2, 10000000 / 2, 10000000, 10000000);
+        QuadTree qt = new QuadTree(boundary, 400000);
+        Random rnd = new Random();
+        Runtime runtime = Runtime.getRuntime();
+        long startTime = System.currentTimeMillis();
+        for (int i = 0; i < numberOfPlace; i++) {
+            double x = rnd.nextDouble() * 10000000;
+            double y = rnd.nextDouble() * 10000000;
+            ServiceType serviceType = ServiceType.values()[rnd.nextInt(ServiceType.values().length)];
+            ArrayList<ServiceType> serviceSet = new ArrayList<>(ServiceType.values().length);
+            serviceSet.insert(serviceType);
+            qt.insert(new Place(serviceSet, x, y));
+        }
+        System.out.println("Number of children: " + qt.countChildren());
+        long endTime = System.currentTimeMillis();
+        System.out.println("Initlizing successfully!");
+        System.out.println("Time taken for initializing: " + (endTime - startTime) + " ms");
+        long memoryUsed = (runtime.totalMemory() - runtime.freeMemory()) / 1024 / 1024; // Convert to megabytes
+        System.out.println("Memory Used: " + memoryUsed + " MB");
+        return qt;
     }
 
-    // public boolean insert(Place place){
-    //     if(!bounds.isContains(place)){
-    //         return false;
-    //     }
-
-    //     if(points.size() < capacity){
-    //         points.add(place);
-    //         System.out.println("Added " + place);
-    //         return true;
-    //     }
-
-    //     if(!isDivided){
-    //         subdivide();
-    //     }
-
-    //     // Properly route the place to the appropriate quadrant
-    //     return insertIntoChildren(place);
-
-    // }
+    public int countChildren() {
+        int count = 0; // This node itself is not counted as a child
+        count += points.size();
+        // Recursively count children of each divided part
+        if (isDivided) {
+            if (topLeft != null) count +=  topLeft.countChildren();
+            if (topRight != null) count +=  topRight.countChildren();
+            if (lowerLeft != null) count +=  lowerLeft.countChildren();
+            if (lowerRight != null) count +=  lowerRight.countChildren();
+        }
+        return count;
+    }
 
     public boolean insert(Place place) {
         if (lastInsertedLeaf != null && lastInsertedLeaf.bounds.isContains(place) && !lastInsertedLeaf.isDivided) {
             if (lastInsertedLeaf.points.size() < lastInsertedLeaf.capacity) {
-                lastInsertedLeaf.points.add(place);
+                lastInsertedLeaf.points.insert(place);
                 return true;
             }
         }
@@ -64,7 +76,7 @@ public class QuadTree {
             }
 
             if (current.points.size() < current.capacity && !current.isDivided) {
-                current.points.add(place);
+                current.points.insert(place);
                 lastInsertedLeaf = current; // Update last inserted leaf
                 // System.out.println("Added " + place + " to " + current);
                 return true;
@@ -88,18 +100,6 @@ public class QuadTree {
         return null;
     }
 
-    // private boolean insertIntoChildren(Place place){
-    //     if (topLeft.bounds.isContains(place)) {
-    //         return topLeft.insert(place);
-    //     } else if (topRight.bounds.isContains(place)) {
-    //         return topRight.insert(place);
-    //     } else if (lowerLeft.bounds.isContains(place)) {
-    //         return lowerLeft.insert(place);
-    //     } else if (lowerRight.bounds.isContains(place)) {
-    //         return lowerRight.insert(place);
-    //     }
-    //     return false;
-    // }
 
     public void subdivide(){
         // This method assumes that it is being called on a node that needs to be subdivided.
@@ -112,20 +112,39 @@ public class QuadTree {
         isDivided = true;
     }
 
-    public ArrayList<Place> getAllPoints(){
-        ArrayList<Place> allPoints = new ArrayList<>();
-        allPoints.addAll(points);
-        if(isDivided){
-            allPoints.addAll(topLeft.getAllPoints());
-            allPoints.addAll(topRight.getAllPoints());
-            allPoints.addAll(lowerLeft.getAllPoints());
-            allPoints.addAll(lowerRight.getAllPoints());
+    public ArrayList<Place> search(Rectangle range, ArrayList<Place> found, ServiceType serviceType, int capacity) {
+        if (found == null){
+            found = new ArrayList<>(capacity);
         }
-        return allPoints;
-    }
 
-    public ArrayList<Place> search(){
-        return points;
+        if (!range.isIntersects(this.bounds)) {
+            return found;
+        }
+    
+        for (int i = 0; i < this.points.size(); i++) {
+            Place p = this.points.get(i);
+            if (range.isContains(p) && p.service.contains(serviceType) && found.size() < capacity) {
+                found.insert(p);
+            }
+        }
+
+        if (this.isDivided) {
+            if (this.topLeft != null) {
+                this.topLeft.search(range, found, serviceType, capacity);
+            }
+            if (this.topRight != null) {
+                this.topRight.search(range, found, serviceType, capacity);
+            }
+            if (this.lowerLeft != null) {
+                this.lowerLeft.search(range, found, serviceType, capacity);
+            }
+            if (this.lowerRight != null) {
+                this.lowerRight.search(range, found, serviceType, capacity);
+            }
+            return found;
+        }
+    
+        return found;
     }
 
     public boolean remove(){

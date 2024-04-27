@@ -1,72 +1,55 @@
 public class Rectangle {
-    double x, y, width, height, left, right, top, bottom;
+    double x, y, width, height;
 
     public Rectangle(double x, double y, double width, double height) {
         this.x = x;
         this.y = y;
-        this.width = width;
         this.height = height;
-
-        this.left = x - (width / 2);
-        this.right = x + (width / 2);
-        this.top = y - (height / 2);
-        this.bottom = y + (height / 2);
+        this.width = width;
     }
 
     public boolean isContains(Place place) {
-        return (this.left <= place.point.x && place.point.x <= this.right
-                && this.top <= place.point.y && place.point.y <= this.bottom);
+        return (x - (width / 2) <= place.x && place.x < x + (width / 2)
+                && y - (height / 2) <= place.y && place.y < y + (height / 2));
     }
+    
 
     public boolean isIntersects(Rectangle rectangle) {
-        return !(this.right < rectangle.left || rectangle.right < this.left ||
-                this.bottom < rectangle.top || rectangle.bottom < this.top);
+        return !(x - (width / 2) >= rectangle.x + (rectangle.width / 2) || rectangle.x - (rectangle.width / 2) >= x + (width / 2)
+                || y - (height / 2) >= rectangle.y + (rectangle.height / 2) || rectangle.y - (rectangle.height / 2) >= y + (height / 2));
     }
 
     public Rectangle subdivide(String quadrant) {
+        double newX = x;
+        double newY = y;
+        double newWidth = width / 2;
+        double newHeight = height / 2;
+
         switch (quadrant) {
             case "topLeft":
-                return new Rectangle(this.x - this.width / 4, this.y - this.height / 4, this.width / 2, this.height / 2);
+                newX = x - newWidth / 2;
+                newY = y - newHeight / 2;
+                break;
+
             case "topRight":
-                return new Rectangle(this.x + this.width / 4, this.y - this.height / 4, this.width / 2, this.height / 2);
+                newX = x + newWidth / 2;
+                newY = y - newHeight / 2;
+                break;
+
             case "lowerLeft":
-                return new Rectangle(this.x - this.width / 4, this.y + this.height / 4, this.width / 2, this.height / 2);
+                newX = x - newWidth / 2;
+                newY = y + newHeight / 2;
+                break;
+
             case "lowerRight":
-                return new Rectangle(this.x + this.width / 4, this.y + this.height / 4, this.width / 2, this.height / 2);
+                newX = x + newWidth / 2;
+                newY = y + newHeight / 2;
+                break;
+
             default:
                 return null;
         }
-
-        // double newX = x;
-        // double newY = y;
-        // double newWidth = width / 2;
-        // double newHeight = height / 2;
-
-        // switch (quadrant) {
-        //     case "topLeft":
-        //         newX = x - newWidth / 2;
-        //         newY = y - newHeight / 2;
-        //         break;
-
-        //     case "topRight":
-        //         newX = x + newWidth / 2;
-        //         newY = y - newHeight / 2;
-        //         break;
-
-        //     case "lowerLeft":
-        //         newX = x - newWidth / 2;
-        //         newY = y + newHeight / 2;
-        //         break;
-
-        //     case "lowerRight":
-        //         newX = x + newWidth / 2;
-        //         newY = y + newHeight / 2;
-        //         break;
-
-        //     default:
-        //         return null;
-        // }
-        // return new Rectangle(newX, newY, newWidth, newHeight);
+        return new Rectangle(newX, newY, newWidth, newHeight);
     }
 
     public String toString() {
