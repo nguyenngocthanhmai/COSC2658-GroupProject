@@ -32,6 +32,7 @@ public class Map2D {
      * Time Complexity: O(n log n), where n is the number of places, due to insertion in the tree.
     */
     public static Map2D initialize(int numberOfPlace) {
+        // create a map size 10000000 x 10000000 (10 million)
         Rectangle boundary = new Rectangle(10000000 / 2, 10000000 / 2, 10000000, 10000000);
         Map2D qt = new Map2D(boundary, 400000);
         Random rnd = new Random();
@@ -169,7 +170,7 @@ public class Map2D {
      * @param serviceType ServiceType, the service type to filter by.
      * @param capacity int, the maximum number of places to return.
      * @return ArrayList<Place>, the list of places that match the criteria.
-     * Time Complexity: O(n), where n is the number of points in the QuadTree.
+     * Time Complexity: O(log n), where n is the number of points in the QuadTree.
     */
     public ArrayList<Place> search(Rectangle range, ArrayList<Place> found, ServiceType serviceType, int capacity) {
         if (found == null) {
