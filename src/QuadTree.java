@@ -1,19 +1,23 @@
 import java.util.Random;
 import java.util.Scanner;
-
+/**
+ * Represents a spatial index structure for efficient querying of 2D points.
+ * This class uses a quad-tree to manage places within defined bounds.
+ */
 public class QuadTree {
-    private int capacity;
-    public ArrayList<Place> points;
-    private boolean isDivided;
-    private Rectangle bounds;
+    private int capacity; // Maximum number of points per quad
+    public ArrayList<Place> points; // Points in this quad
+    private boolean isDivided; // Flag to check if the quad is already divided
+    private Rectangle bounds; // Spatial bounds of this quad
+    private QuadTree topLeft, topRight, lowerLeft, lowerRight; // Children quads
+    private QuadTree lastInsertedLeaf = null; // Last leaf where a point was inserted
+    private int depth; // Depth of this node in the tree
 
-    private QuadTree topLeft;
-    private QuadTree topRight;
-    private QuadTree lowerLeft;
-    private QuadTree lowerRight;
-    private QuadTree lastInsertedLeaf = null;
-    private int depth;
-
+    /**
+     * Constructor to initialize the QuadTree with bounds and capacity.
+     * @param bounds Rectangle, the spatial bounds of this quad.
+     * @param capacity int, the maximum number of points this quad can hold before subdividing.
+    */
     public QuadTree(Rectangle bounds, int capacity) {
         this.bounds = bounds;
         this.capacity = capacity;
@@ -21,6 +25,12 @@ public class QuadTree {
         this.depth = 0;
     }
 
+    /**
+     * Initializes a QuadTree with a specified number of random places.
+     * @param numberOfPlace int, the number of places to generate and insert.
+     * @return QuadTree, the initialized quad tree.
+     * Time Complexity: O(n log n), where n is the number of places, due to insertion in the tree.
+    */
     public static QuadTree initialize(int numberOfPlace) {
         Rectangle boundary = new Rectangle(10000000 / 2, 10000000 / 2, 10000000, 10000000);
         QuadTree qt = new QuadTree(boundary, 400000);
@@ -44,6 +54,11 @@ public class QuadTree {
         return qt;
     }
 
+    /**
+     * Counts the total number of children nodes in the QuadTree.
+     * @return int, the total number of children nodes.
+     * Time Complexity: O(n), where n is the number of nodes in the QuadTree.
+    */
     public int countChildren() {
         int count = 0; // This node itself is not counted as a child
         count += points.size();
@@ -61,6 +76,12 @@ public class QuadTree {
         return count;
     }
 
+    /**
+     * Inserts a place into the QuadTree.
+     * @param place Place, the place to insert.
+     * @return boolean, true if the place was successfully inserted, false otherwise.
+     * Time Complexity: O(log n), where n is the number of nodes in the QuadTree.
+    */
     public boolean insert(Place place) {
         if (lastInsertedLeaf != null && lastInsertedLeaf.bounds.isContains(place) && !lastInsertedLeaf.isDivided) {
             if (lastInsertedLeaf.points.size() < lastInsertedLeaf.capacity) {
@@ -73,6 +94,12 @@ public class QuadTree {
         return insertAtRoot(place);
     }
 
+    /**
+     * Helper method to insert a place starting from the root.
+     * @param place Place, the place to insert.
+     * @return boolean, true if the place was successfully inserted, false otherwise.
+     * Time Complexity: O(log n), where n is the number of nodes in the QuadTree.
+    */
     private boolean insertAtRoot(Place place) {
         QuadTree current = this;
         while (current != null) {
@@ -97,6 +124,12 @@ public class QuadTree {
         return false;
     }
 
+    /**
+     * Navigates to the appropriate child QuadTree based on the place's location.
+     * @param place Place, the place used to determine the appropriate child.
+     * @return QuadTree, the child QuadTree that contains the place.
+     * Time Complexity: O(1).
+    */
     private QuadTree navigateToChild(Place place) {
         if (topLeft.bounds.isContains(place))
             return topLeft;
@@ -109,6 +142,10 @@ public class QuadTree {
         return null;
     }
 
+    /**
+     * Subdivides the current QuadTree node into four children.
+     * Time Complexity: O(1).
+    */
     public void subdivide() {
         // This method assumes that it is being called on a node that needs to be
         // subdivided.
@@ -125,6 +162,15 @@ public class QuadTree {
         isDivided = true;
     }
 
+    /**
+     * Searches for places within a specified range that match a given service type.
+     * @param range Rectangle, the area to search within.
+     * @param found ArrayList<Place>, the list of found places.
+     * @param serviceType ServiceType, the service type to filter by.
+     * @param capacity int, the maximum number of places to return.
+     * @return ArrayList<Place>, the list of places that match the criteria.
+     * Time Complexity: O(n), where n is the number of points in the QuadTree.
+    */
     public ArrayList<Place> search(Rectangle range, ArrayList<Place> found, ServiceType serviceType, int capacity) {
         if (found == null) {
             found = new ArrayList<>(capacity);
@@ -161,6 +207,13 @@ public class QuadTree {
         return found;
     }
 
+    /**
+     * Edits a place at a specified location.
+     * @param x double, the x-coordinate of the place.
+     * @param y double, the y-coordinate of the place.
+     * @return Place, the edited place, or null if no place was found.
+     * Time Complexity: O(log n + k), where n is the number of nodes and k is the number of operations to edit the place.
+    */
     public Place editPLace(double x, double y) {
         ArrayList<Place> foundPlaces = search(new Rectangle(x, y, 0, 0), null, null, 1);
         if (foundPlaces.size() == 0) {
@@ -170,10 +223,10 @@ public class QuadTree {
         Scanner sc = new Scanner(System.in);
         Place placeToEdit = foundPlaces.get(0);
         System.out.println("Place: " + placeToEdit);
-        GUI.printLineSeperator();
+        GUI.printLineSeparator();
         System.out.println("1. Add service");
         System.out.println("2. Remove service");
-        GUI.printLineSeperator();
+        GUI.printLineSeparator();
         System.out.print("Enter your choice: ");
         String choice = sc.next();
         switch (choice) {
@@ -203,9 +256,18 @@ public class QuadTree {
             default:
                 break;
         }
+        sc.close();
         return placeToEdit;
     }
-
+    
+    /**
+     * Removes a place at a specified location.
+     * @param x double, the x-coordinate of the place.
+     * @param y double, the y-coordinate of the place.
+     * * @param y double, the y-coordinate of the place.
+     * @return boolean, true if the place was successfully removed, false otherwise.
+     * Time Complexity: O(log n), where n is the number of nodes in the QuadTree.
+    */
     public boolean removePlace(double x, double y) {
         // Check if the current node's bounds contain the point
         ArrayList<Place> foundPlaces = search(new Rectangle(x, y, 0, 0), null, null, 1);
