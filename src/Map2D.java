@@ -4,13 +4,13 @@ import java.util.Scanner;
  * Represents a spatial index structure for efficient querying of 2D points.
  * This class uses a quad-tree to manage places within defined bounds.
  */
-public class QuadTree {
+public class Map2D {
     private int capacity; // Maximum number of points per quad
     public ArrayList<Place> points; // Points in this quad
     private boolean isDivided; // Flag to check if the quad is already divided
     private Rectangle bounds; // Spatial bounds of this quad
-    private QuadTree topLeft, topRight, lowerLeft, lowerRight; // Children quads
-    private QuadTree lastInsertedLeaf = null; // Last leaf where a point was inserted
+    private Map2D topLeft, topRight, lowerLeft, lowerRight; // Children quads
+    private Map2D lastInsertedLeaf = null; // Last leaf where a point was inserted
     private int depth; // Depth of this node in the tree
 
     /**
@@ -18,7 +18,7 @@ public class QuadTree {
      * @param bounds Rectangle, the spatial bounds of this quad.
      * @param capacity int, the maximum number of points this quad can hold before subdividing.
     */
-    public QuadTree(Rectangle bounds, int capacity) {
+    public Map2D(Rectangle bounds, int capacity) {
         this.bounds = bounds;
         this.capacity = capacity;
         points = new ArrayList<Place>(capacity);
@@ -31,9 +31,9 @@ public class QuadTree {
      * @return QuadTree, the initialized quad tree.
      * Time Complexity: O(n log n), where n is the number of places, due to insertion in the tree.
     */
-    public static QuadTree initialize(int numberOfPlace) {
+    public static Map2D initialize(int numberOfPlace) {
         Rectangle boundary = new Rectangle(10000000 / 2, 10000000 / 2, 10000000, 10000000);
-        QuadTree qt = new QuadTree(boundary, 400000);
+        Map2D qt = new Map2D(boundary, 400000);
         Random rnd = new Random();
         Runtime runtime = Runtime.getRuntime();
         long startTime = System.currentTimeMillis();
@@ -101,7 +101,7 @@ public class QuadTree {
      * Time Complexity: O(log n), where n is the number of nodes in the QuadTree.
     */
     private boolean insertAtRoot(Place place) {
-        QuadTree current = this;
+        Map2D current = this;
         while (current != null) {
             if (!current.bounds.isContains(place)) {
                 return false;
@@ -130,7 +130,7 @@ public class QuadTree {
      * @return QuadTree, the child QuadTree that contains the place.
      * Time Complexity: O(1).
     */
-    private QuadTree navigateToChild(Place place) {
+    private Map2D navigateToChild(Place place) {
         if (topLeft.bounds.isContains(place))
             return topLeft;
         if (topRight.bounds.isContains(place))
@@ -151,13 +151,13 @@ public class QuadTree {
         // subdivided.
         double halfWidth = bounds.width / 2;
         double halfHeight = bounds.height / 2;
-        topLeft = new QuadTree(
+        topLeft = new Map2D(
                 new Rectangle(bounds.x - halfWidth / 2, bounds.y - halfHeight / 2, halfWidth, halfHeight), capacity);
-        topRight = new QuadTree(
+        topRight = new Map2D(
                 new Rectangle(bounds.x + halfWidth / 2, bounds.y - halfHeight / 2, halfWidth, halfHeight), capacity);
-        lowerLeft = new QuadTree(
+        lowerLeft = new Map2D(
                 new Rectangle(bounds.x - halfWidth / 2, bounds.y + halfHeight / 2, halfWidth, halfHeight), capacity);
-        lowerRight = new QuadTree(
+        lowerRight = new Map2D(
                 new Rectangle(bounds.x + halfWidth / 2, bounds.y + halfHeight / 2, halfWidth, halfHeight), capacity);
         isDivided = true;
     }
@@ -259,7 +259,7 @@ public class QuadTree {
         sc.close();
         return placeToEdit;
     }
-    
+
     /**
      * Removes a place at a specified location.
      * @param x double, the x-coordinate of the place.

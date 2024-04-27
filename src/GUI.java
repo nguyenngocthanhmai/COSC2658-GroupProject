@@ -5,7 +5,7 @@ import java.util.Scanner;
  * It allows users to insert, remove, search, and edit places in the QuadTree through a console-based menu system.
  */
 public class GUI {
-    private static QuadTree qt; // The QuadTree that stores all the places.
+    private static Map2D qt; // The QuadTree that stores all the places.
 
     /**
      * Initializes the QuadTree and handles the user interface for operations on the QuadTree.
@@ -15,7 +15,7 @@ public class GUI {
         Scanner sc = new Scanner(System.in);
         System.out.print("Enter the number of place to initialize the quad tree: ");
         int numPlace = sc.nextInt();
-        qt = QuadTree.initialize(numPlace);
+        qt = Map2D.initialize(numPlace);
         while (true) {
             displayOperations();
             String choice = sc.next();
