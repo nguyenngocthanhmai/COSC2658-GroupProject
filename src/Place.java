@@ -9,22 +9,39 @@ public class Place {
         this.y = y;
     }
 
-    public ArrayList<ServiceType> getService() {
-        return service;
+    public void printServices(){
+        for (int i = 0; i < service.size(); i++) {
+            System.out.println(i + ". " + service.get(i));
+        }
     }
 
-    // not implement yet
-    public boolean editServices() {
-        return false;
+    public ServiceType getServiceByIndex(int index) {
+        return service.get(index);
     }
 
-    // not implement yet
-    public boolean removeService() {
-        return false;
+    public boolean removeService(ServiceType serviceType) {
+        if (!hasService(serviceType)) {
+            System.out.println("Service not found!");
+            return false;
+        }
+
+        if (service.size() == 1) {
+            System.out.println("Can't remove the last service!");
+            return false;
+        }
+        return service.remove(serviceType);
     }
 
-    public boolean addService() {
-        return false;
+    public boolean addService(ServiceType serviceType) {
+        if (hasService(serviceType)) {
+            System.out.println("Service already exists!");
+            return false;
+        }
+        return service.insert(serviceType);
+    }
+
+    private boolean hasService(ServiceType serviceType) {
+        return service.contains(serviceType);
     }
 
     @Override

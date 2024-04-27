@@ -9,10 +9,9 @@ public class Rectangle {
     }
 
     public boolean isContains(Place place) {
-        return (x - (width / 2) <= place.x && place.x < x + (width / 2)
-                && y - (height / 2) <= place.y && place.y < y + (height / 2));
+        return (x - (width / 2) <= place.x && place.x <= x + (width / 2)
+                && y - (height / 2) <= place.y && place.y <= y + (height / 2));
     }
-    
 
     public boolean isIntersects(Rectangle rectangle) {
         return !(x - (width / 2) >= rectangle.x + (rectangle.width / 2) || rectangle.x - (rectangle.width / 2) >= x + (width / 2)
@@ -57,6 +56,6 @@ public class Rectangle {
                 "x = " + x + ", " +
                 "y = " + y + ", " +
                 "width = " + width + ", " +
-                "height = " + height + ", ";
+                "height = " + height + "}";
     }
 }

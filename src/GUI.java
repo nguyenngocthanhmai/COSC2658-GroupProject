@@ -39,7 +39,20 @@ public class GUI {
                     }
                     break;
                 }
-                case "3":
+                case "2": {
+                    System.out.print("Please enter the x coordinate: ");
+                    double x = sc.nextDouble();
+                    System.out.print("Please enter the y coordinate: ");
+                    double y = sc.nextDouble();
+                    if (qt.removePlace(x, y)) {
+                        System.out.println("Place removed successfully!");
+                    } else {
+                        System.out.println("Place not found");
+                        System.out.println("Place removal failed!");
+                    }
+                    break;
+                }
+                case "3": {
                     System.out.print("Please enter the center point x: ");
                     double x = sc.nextDouble();
                     System.out.print("Please enter the center point y: ");
@@ -67,7 +80,16 @@ public class GUI {
                         System.out.println(places.get(i));
                     }
                     break;
-                case "4":
+                }
+                case "4": {
+                    System.out.print("Please enter the x coordinate: ");
+                    double x = sc.nextDouble();
+                    System.out.print("Please enter the y coordinate: ");
+                    double y = sc.nextDouble();
+                    qt.editePLace(x, y);
+                    break;
+                }
+                case "5":
                     sc.close();
                     return;
                 default:
@@ -82,7 +104,8 @@ public class GUI {
         System.out.println("1. Insert a place");
         System.out.println("2. Remove a place");
         System.out.println("3. Search for a place");
-        System.out.println("4. Exit");
+        System.out.println("4. Edit a place");
+        System.out.println("5. Exit");
         printLineSeperator();
         System.out.print("Enter your choice: ");
     }

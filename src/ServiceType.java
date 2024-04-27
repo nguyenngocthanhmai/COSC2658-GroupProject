@@ -1,5 +1,5 @@
 public enum ServiceType {
-    HOTEL;
+    HOTEL, COFFEE, RESTAURANT, ATM, GAS_STATION, HOSPITAL;
 
     public static ServiceType getServiceByIndex(int index) {
         ServiceType[] services = ServiceType.values();
