@@ -5,13 +5,13 @@ import java.util.Scanner;
  * This class uses a quad-tree to manage places within defined bounds.
  */
 public class Map2D {
-    private int capacity; // Maximum number of points per quad
+    private final int capacity; // Maximum number of points per quad
     public ArrayList<Place> points; // Points in this quad
     private boolean isDivided; // Flag to check if the quad is already divided
-    private Rectangle bounds; // Spatial bounds of this quad
+    private final Rectangle bounds; // Spatial bounds of this quad
     private Map2D topLeft, topRight, lowerLeft, lowerRight; // Children quads
     private Map2D lastInsertedLeaf = null; // Last leaf where a point was inserted
-    private int depth; // Depth of this node in the tree
+    private final int depth; // Depth of this node in the tree
 
     /**
      * Constructor to initialize the QuadTree with bounds and capacity.
@@ -39,12 +39,10 @@ public class Map2D {
         Runtime runtime = Runtime.getRuntime();
         long startTime = System.currentTimeMillis();
         for (int i = 0; i < numberOfPlace; i++) {
-            double x = rnd.nextDouble() * 10000000;
-            double y = rnd.nextDouble() * 10000000;
-            ServiceType serviceType = ServiceType.values()[rnd.nextInt(ServiceType.values().length)];
-            ArrayList<ServiceType> serviceSet = new ArrayList<>(ServiceType.values().length);
-            serviceSet.insert(serviceType);
-            qt.insert(new Place(serviceSet, x, y));
+            int x = rnd.nextInt(10000000);
+            int y = rnd.nextInt(10000000);
+            int services = ServiceType.randomizeServices();
+            qt.insert(new Place(services, x, y));
         }
         System.out.println("Number of children: " + qt.countChildren());
         long endTime = System.currentTimeMillis();
@@ -183,7 +181,7 @@ public class Map2D {
 
         for (int i = 0; i < this.points.size(); i++) {
             Place p = this.points.get(i);
-            if (range.isContains(p) && (serviceType == null || p.service.contains(serviceType))
+            if (range.isContains(p) && (serviceType == null || p.hasService(serviceType))
                     && found.size() < capacity) {
                 found.insert(p);
             }
@@ -223,7 +221,7 @@ public class Map2D {
         }
         Scanner sc = new Scanner(System.in);
         Place placeToEdit = foundPlaces.get(0);
-        System.out.println("Place: " + placeToEdit);
+        System.out.println(placeToEdit);
         GUI.printLineSeparator();
         System.out.println("1. Add service");
         System.out.println("2. Remove service");
@@ -269,20 +267,18 @@ public class Map2D {
      * @return boolean, true if the place was successfully removed, false otherwise.
      * Time Complexity: O(log n), where n is the number of nodes in the QuadTree.
     */
-    public boolean removePlace(double x, double y) {
+    public boolean removePlace(int x, int y) {
         // Check if the current node's bounds contain the point
         ArrayList<Place> foundPlaces = search(new Rectangle(x, y, 0, 0), null, null, 1);
         if (foundPlaces.size() == 0) {
             return false;
         }
         Place placeToRemove = foundPlaces.get(0);
+        System.out.println("Removing place: " + placeToRemove);
         // Proceed to remove the place if found
-        if (points.remove(placeToRemove)) {
-            return true;
-        }
+        return points.remove(placeToRemove);
 
         // If not found and not divided, return null
-        return false;
     }
 
     @Override

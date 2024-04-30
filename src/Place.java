@@ -3,9 +3,9 @@
  * This class manages services at a specific coordinate (x, y).
  */
 public class Place {
-    ArrayList<ServiceType> service; // List of services available at this place
-    double x; // X-coordinate of the place
-    double y; // Y-coordinate of the place
+    int service; // List of services available at this place
+    int x; // X-coordinate of the place
+    int y; // Y-coordinate of the place
 
     /**
      * Constructor to initialize the Place with services and coordinates.
@@ -13,7 +13,7 @@ public class Place {
      * @param x double, the x-coordinate of this place.
      * @param y double, the y-coordinate of this place.
      */
-    public Place(ArrayList<ServiceType> service, double x, double y) {
+    public Place(int service, int x, int y) {
         this.service = service;
         this.x = x;
         this.y = y;
@@ -24,8 +24,9 @@ public class Place {
      * Time Complexity: O(n), where n is the number of services.
      */
     public void printServices(){
-        for (int i = 0; i < service.size(); i++) {
-            System.out.println(i + ". " + service.get(i));
+        ArrayList<ServiceType> services = ServiceType.getServicesByBinary(service);
+        for (int i = 0; i < services.size(); i++) {
+            System.out.println(i + ". " + services.get(i));
         }
     }
 
@@ -36,7 +37,7 @@ public class Place {
      * Time Complexity: O(1), assuming ArrayList.get() is constant time.
      */
     public ServiceType getServiceByIndex(int index) {
-        return service.get(index);
+        return ServiceType.getServiceByIndex(index);
     }
 
     /**
@@ -46,16 +47,13 @@ public class Place {
      * Time Complexity: O(n), where n is the number of services (due to contains and remove operations).
      */
     public boolean removeService(ServiceType serviceType) {
-        if (!hasService(serviceType)) {
+        int serviceBit = serviceType.getBinaryValue();
+        if ((service & serviceBit) != serviceBit) {
             System.out.println("Service not found!");
             return false;
         }
-
-        if (service.size() == 1) {
-            System.out.println("Can't remove the last service!");
-            return false;
-        }
-        return service.remove(serviceType);
+        service &= ~serviceBit;
+        return true;
     }
 
     /**
@@ -65,11 +63,13 @@ public class Place {
      * Time Complexity: O(n), where n is the number of services (due to contains check).
      */
     public boolean addService(ServiceType serviceType) {
-        if (hasService(serviceType)) {
+        int serviceBit = serviceType.getBinaryValue();
+        if ((service & serviceBit) == serviceBit) {
             System.out.println("Service already exists!");
             return false;
         }
-        return service.insert(serviceType);
+        service |= serviceBit;
+        return true;
     }
 
     /**
@@ -78,8 +78,9 @@ public class Place {
      * @return boolean, true if the service is available, false otherwise.
      * Time Complexity: O(n), where n is the number of services.
      */
-    private boolean hasService(ServiceType serviceType) {
-        return service.contains(serviceType);
+    public boolean hasService(ServiceType serviceType) {
+        int serviceBit = serviceType.getBinaryValue();
+        return (service & serviceBit) == serviceBit;
     }
 
     /**
@@ -90,14 +91,15 @@ public class Place {
     @Override
     public String toString() {
         StringBuilder sb = new StringBuilder();
-        sb.append("Place: service = ");
-        for (int i =0; i<service.size(); i++){
-            sb.append(service.get(i));
-            if (i != service.size() - 1) {
+        ArrayList<ServiceType> services = ServiceType.getServicesByBinary(service);
+        sb.append("Place: service = [");
+        for (int i = 0; i < services.size(); i++) {
+            sb.append(services.get(i));
+            if (i < services.size() - 1) {
                 sb.append(", ");
             }
         }
-        sb.append(", x = ").append(x);
+        sb.append("], x = ").append(x);
         sb.append(", y = ").append(y);
         return sb.toString();
     }

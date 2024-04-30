@@ -77,10 +77,10 @@ public class GUI {
             }
         }
         System.out.print("Please enter the x coordinate: ");
-        double x = sc.nextDouble();
+        int x = sc.nextInt();
         System.out.print("Please enter the y coordinate: ");
-        double y = sc.nextDouble();
-        Place place = new Place(servicesAtPlace, x, y);
+        int y = sc.nextInt();
+        Place place = new Place(ServiceType.servicesToBinary(servicesAtPlace), x, y);
         System.out.println("Inserting a place: " + place);
         if (qt.insert(place)) {
             System.out.println("Place inserted successfully");
@@ -96,9 +96,9 @@ public class GUI {
      */
     private static void removePlace(Scanner sc) {
         System.out.print("Please enter the x coordinate: ");
-        double x = sc.nextDouble();
+        int x = sc.nextInt();
         System.out.print("Please enter the y coordinate: ");
-        double y = sc.nextDouble();
+        int y = sc.nextInt();
         if (qt.removePlace(x, y)) {
             System.out.println("Place removed successfully!");
         } else {
@@ -133,8 +133,11 @@ public class GUI {
         printLineSeparator();
         ServiceType serviceType = ServiceType.getServiceByIndex(index);
         System.out.println(
-                "Searching for places within the rectangle: x=" + x + ", y=" + y + ", w=" + w + ", h=" + h);
+                "Searching for places within the rectangle: x=" + x + ", y=" + y + ", w=" + w*2 + ", h=" + h*2);
+        long startTime = System.currentTimeMillis();
         ArrayList<Place> places = qt.search(new Rectangle(x, y, w * 2, h * 2), null, serviceType, capac);
+        long endTime = System.currentTimeMillis();
+        System.out.println("Time taken: " + (endTime - startTime) + " ms");
         System.out.println("Number of places found: " + places.size());
         for (int i = 0; i < places.size(); i++) {
             System.out.println(places.get(i));

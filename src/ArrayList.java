@@ -7,7 +7,7 @@
  */
 public class ArrayList<T> {
     private int size; // The number of elements currently in the list
-    private T[] items; // Array to store the elements of the list
+    private final T[] items; // Array to store the elements of the list
 
 	/**
      * Constructs an ArrayList with a specified initial capacity.
@@ -15,9 +15,7 @@ public class ArrayList<T> {
      */
 	public ArrayList(int capacity) {
 		size = 0;
-		@SuppressWarnings("unchecked")
-		T[] temp = (T[]) new Object[capacity];
-		items = temp;
+		items = (T[]) new Object[capacity];
 	}
 
 	/**
@@ -29,20 +27,7 @@ public class ArrayList<T> {
 		@SuppressWarnings("unchecked")
 		T[] temp = (T[]) new Object[other.items.length];
 		this.items = temp;
-		for (int i = 0; i < other.size; i++) {
-			this.items[i] = (T) other.items[i].clone();
-		}
-	}
-
-	 /**
-     * Shifts all elements from the specified index one position to the right.
-     * @param index The starting index to shift right.
-     * Time Complexity: O(n), where n is the number of elements to shift.
-     */
-	private void shiftRight(int index) {
-		for (int i = size; i > index; i--) {
-			items[i] = items[i - 1];
-		}
+        if (other.size >= 0) System.arraycopy(other.items, 0, this.items, 0, other.size);
 	}
 
 	/**
@@ -79,45 +64,26 @@ public class ArrayList<T> {
 	}
 
 	/**
-     * Checks if the ArrayList contains a specific element.
-     * @param value The element to search for.
-     * @return true if the element is found, false otherwise.
-     * Time Complexity: O(n), where n is the number of elements in the list.
-     */
-	public boolean contains(T value) {
-		for (int i = 0; i < size; i++) {
-			if (items[i].equals(value)) {
-				return true;
-			}
-		}
-		return false;
-	}
-
-	/**
-     * Inserts an element at the specified index.
-     * @param index The index where the element should be inserted.
-     * @param value The element to insert.
-     * @return true if the insertion is successful, false if the index is out of bounds.
-     * Time Complexity: O(n), where n is the number of elements to shift.
-     */
-	public boolean insertAt(int index, T value) {
+	 * Inserts an element at the specified index.
+	 *
+	 * @param index The index where the element should be inserted.
+	 * @param value The element to insert.
+	 */
+	public void insertAt(int index, T value) {
 		if (index > size) {
-			return false;
+			return;
 		}
-		shiftRight(index);
 		items[index] = value;
 		size++;
-		return true;
 	}
 
 	/**
-     * Inserts an element at the end of the ArrayList.
-     * @param value The element to add.
-     * @return true if the element is added successfully.
-     * Time Complexity: O(1).
-     */
-	public boolean insert(T value) {
-		return insertAt(size, value);
+	 * Inserts an element at the end of the ArrayList.
+	 *
+	 * @param value The element to add.
+	 */
+	public void insert(T value) {
+		insertAt(size, value);
 	}
 
 	/**
