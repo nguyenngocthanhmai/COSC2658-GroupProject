@@ -66,11 +66,11 @@ public class GUI {
         ArrayList<ServiceType> servicesAtPlace = new ArrayList<>(6);
         while (true) {
             ServiceType.getAllServices();
-            System.out.print("Choose service you want to add: ");
+            System.out.print("Choose service type you want to add: ");
             int index = sc.nextInt();
             ServiceType serviceType = ServiceType.getServiceByIndex(index);
             servicesAtPlace.insert(serviceType);
-            System.out.print("Press 'x' to exit or else to continue adding: ");
+            System.out.print("Press 'x' to exit or else to continue adding service type: ");
 
             if (sc.next().equals("x")) {
                 break;
