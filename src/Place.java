@@ -49,7 +49,6 @@ public class Place {
     public boolean removeService(ServiceType serviceType) {
         int serviceBit = serviceType.getBinaryValue();
         if ((service & serviceBit) != serviceBit) {
-            System.out.println("Service not found!");
             return false;
         }
         service &= ~serviceBit;

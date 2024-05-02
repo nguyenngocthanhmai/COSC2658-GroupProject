@@ -128,7 +128,7 @@ public class GUI {
             return;
         }
         ServiceType.getAllServices();
-        System.out.print("Choose service you want to add: ");
+        System.out.print("Choose service for searching: ");
         int index = sc.nextInt();
         printLineSeparator();
         ServiceType serviceType = ServiceType.getServiceByIndex(index);

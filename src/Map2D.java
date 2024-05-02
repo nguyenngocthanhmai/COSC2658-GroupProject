@@ -255,7 +255,6 @@ public class Map2D {
             default:
                 break;
         }
-        sc.close();
         return placeToEdit;
     }
 
@@ -269,14 +268,32 @@ public class Map2D {
     */
     public boolean removePlace(int x, int y) {
         // Check if the current node's bounds contain the point
-        ArrayList<Place> foundPlaces = search(new Rectangle(x, y, 0, 0), null, null, 1);
-        if (foundPlaces.size() == 0) {
-            return false;
+        Map2D current = this;
+        Place placeToRemove = null;
+    
+        // Traverse down the tree to find and remove the place in one go
+        while (current != null) {
+            for (int i = 0; i < current.points.size(); i++) {
+                if (current.points.get(i).compare(x, y)) {
+                    placeToRemove = current.points.get(i);
+                    break;
+                }
+            }
+    
+            if (placeToRemove != null) {
+                if (current.points.remove(placeToRemove)) {
+                    System.out.println("Removing place: " + placeToRemove);
+                    return true;
+                }
+            }
+    
+            if (current.isDivided) {
+                current = current.navigateToChild(new Place(0, x, y)); // Navigate using a dummy place
+            } else {
+                break; // Stop if not divided
+            }
         }
-        Place placeToRemove = foundPlaces.get(0);
-        System.out.println("Removing place: " + placeToRemove);
-        // Proceed to remove the place if found
-        return points.remove(placeToRemove);
+        return false;
 
         // If not found and not divided, return null
     }
