@@ -14,6 +14,7 @@ public enum ServiceType {
     HOSPITAL( 0b100000);
 
     private final int binaryValue;
+    private static final int numberOfService = 6;
     private static final Random random = new Random();
 
     ServiceType(int binaryValue) {
@@ -44,18 +45,20 @@ public enum ServiceType {
      * @return int, the binary representation of a random set of services.
      */
     public static int randomizeServices() {
-        int services = 0;
-        for (ServiceType service : ServiceType.values()) {
-            // Randomly decide whether to include each service
-            if (random.nextBoolean()) {
-                services |= service.getBinaryValue();
-            }
-        }
-        return services;
+        int randomIndex = random.nextInt(numberOfService); // There are 6 service types
+        return switch (randomIndex) {
+            case 0 -> ServiceType.HOTEL.getBinaryValue();
+            case 1 -> ServiceType.COFFEE.getBinaryValue();
+            case 2 -> ServiceType.RESTAURANT.getBinaryValue();
+            case 3 -> ServiceType.ATM.getBinaryValue();
+            case 4 -> ServiceType.GAS_STATION.getBinaryValue();
+            case 5 -> ServiceType.HOSPITAL.getBinaryValue();
+            default -> throw new AssertionError("Unknown enum index " + randomIndex);
+        };
     }
 
     public static ArrayList<ServiceType> getServicesByBinary(int binaryCombination) {
-        ArrayList<ServiceType> services = new ArrayList<>(6);
+        ArrayList<ServiceType> services = new ArrayList<>(numberOfService);
         for (ServiceType service : ServiceType.values()) {
             if ((service.getBinaryValue() & binaryCombination) != 0) {
                 services.insert(service);

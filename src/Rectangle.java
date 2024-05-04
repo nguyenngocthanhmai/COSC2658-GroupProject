@@ -4,7 +4,7 @@
  */
 public class Rectangle {
     double x, y, width, height; // Center coordinates (x, y) and dimensions (width, height) of the rectangle
-
+    double halfWidth, halfHeight;
     /**
      * Constructs a Rectangle object with specified center coordinates and dimensions.
      * @param x double, the x-coordinate of the rectangle's center.
@@ -17,6 +17,8 @@ public class Rectangle {
         this.y = y;
         this.height = height;
         this.width = width;
+        this.halfWidth = width / 2;
+        this.halfHeight = height / 2;
     }
 
     /**
@@ -26,8 +28,8 @@ public class Rectangle {
      * Time Complexity: O(1).
      */
     public boolean isContains(Place place) {
-        return (x - (width / 2) <= place.x && place.x <= x + (width / 2)
-                && y - (height / 2) <= place.y && place.y <= y + (height / 2));
+        return (x - halfWidth <= place.x && place.x <= x + halfWidth
+                && y - halfHeight <= place.y && place.y <= y + halfHeight);
     }
 
      /**

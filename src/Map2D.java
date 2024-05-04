@@ -1,5 +1,6 @@
 import java.util.Random;
 import java.util.Scanner;
+
 /**
  * Represents a spatial index structure for efficient querying of 2D points.
  * This class uses a quad-tree to manage places within defined bounds.
@@ -15,9 +16,11 @@ public class Map2D {
 
     /**
      * Constructor to initialize the QuadTree with bounds and capacity.
-     * @param bounds Rectangle, the spatial bounds of this quad.
-     * @param capacity int, the maximum number of points this quad can hold before subdividing.
-    */
+     * 
+     * @param bounds   Rectangle, the spatial bounds of this quad.
+     * @param capacity int, the maximum number of points this quad can hold before
+     *                 subdividing.
+     */
     public Map2D(Rectangle bounds, int capacity) {
         this.bounds = bounds;
         this.capacity = capacity;
@@ -26,15 +29,17 @@ public class Map2D {
     }
 
     /**
-     * Initializes a QuadTree with a specified number of random places.
+     * Initializes a QuadTree with a specified number of random places. 
+     * 
      * @param numberOfPlace int, the number of places to generate and insert.
      * @return QuadTree, the initialized quad tree.
-     * Time Complexity: O(n log n), where n is the number of places, due to insertion in the tree.
+     *         Time Complexity: O(n log n), where n is the number of places, due to
+     *         insertion in the tree.
     */
     public static Map2D initialize(int numberOfPlace) {
         // create a map size 10000000 x 10000000 (10 million)
         Rectangle boundary = new Rectangle(10000000 / 2, 10000000 / 2, 10000000, 10000000);
-        Map2D qt = new Map2D(boundary, 400000);
+        Map2D qt = new Map2D(boundary, 390625);
         Random rnd = new Random();
         Runtime runtime = Runtime.getRuntime();
         long startTime = System.currentTimeMillis();
@@ -44,9 +49,9 @@ public class Map2D {
             int services = ServiceType.randomizeServices();
             qt.insert(new Place(services, x, y));
         }
-        System.out.println("Number of children: " + qt.countChildren());
         long endTime = System.currentTimeMillis();
-        System.out.println("Initlizing successfully!");
+        System.out.println("Initializing successfully!");
+        System.out.println("Number of children: " + qt.countChildren());
         System.out.println("Time taken for initializing: " + (endTime - startTime) + " ms");
         long memoryUsed = (runtime.totalMemory() - runtime.freeMemory()) / 1024 / 1024; // Convert to megabytes
         System.out.println("Memory Used: " + memoryUsed + " MB");
@@ -55,9 +60,11 @@ public class Map2D {
 
     /**
      * Counts the total number of children nodes in the QuadTree.
+     * 
      * @return int, the total number of children nodes.
-     * Time Complexity: O(n), where n is the number of nodes in the QuadTree.
-    */
+     *         Time Complexity: O(n), where n is the number of nodes in the
+     *         QuadTree.
+     */
     public int countChildren() {
         int count = 0; // This node itself is not counted as a child
         count += points.size();
@@ -77,39 +84,25 @@ public class Map2D {
 
     /**
      * Inserts a place into the QuadTree.
+     * 
      * @param place Place, the place to insert.
-     * @return boolean, true if the place was successfully inserted, false otherwise.
-     * Time Complexity: O(log n), where n is the number of nodes in the QuadTree.
-    */
+     * @return boolean, true if the place was successfully inserted, false
+     *         otherwise.
+     *         Time Complexity: O(log n), where n is the number of nodes in the
+     *         QuadTree.
+     */
     public boolean insert(Place place) {
-        if (lastInsertedLeaf != null && lastInsertedLeaf.bounds.isContains(place) && !lastInsertedLeaf.isDivided) {
-            if (lastInsertedLeaf.points.size() < lastInsertedLeaf.capacity) {
-                lastInsertedLeaf.points.insert(place);
-                return true;
-            }
-        }
+        Map2D current = (lastInsertedLeaf != null && lastInsertedLeaf.bounds.isContains(place)
+                && !lastInsertedLeaf.isDivided) ? lastInsertedLeaf : this;
 
-        lastInsertedLeaf = null; // Reset if last leaf was full or does not contain the point
-        return insertAtRoot(place);
-    }
-
-    /**
-     * Helper method to insert a place starting from the root.
-     * @param place Place, the place to insert.
-     * @return boolean, true if the place was successfully inserted, false otherwise.
-     * Time Complexity: O(log n), where n is the number of nodes in the QuadTree.
-    */
-    private boolean insertAtRoot(Place place) {
-        Map2D current = this;
         while (current != null) {
             if (!current.bounds.isContains(place)) {
                 return false;
             }
 
             if (current.points.size() < current.capacity && !current.isDivided) {
-                current.points.insert(place);
+                current.points.insert(place); // Assuming `add` is the correct method to add to ArrayList
                 lastInsertedLeaf = current; // Update last inserted leaf
-                // System.out.println("Added " + place + " to " + current);
                 return true;
             }
 
@@ -117,34 +110,40 @@ public class Map2D {
                 current.subdivide();
             }
 
-            // Navigate to the correct child
-            current = current.navigateToChild(place);
+            // Inline navigation logic
+            current = navigateToChild(place, current);
         }
         return false;
     }
 
     /**
      * Navigates to the appropriate child QuadTree based on the place's location.
+     * 
      * @param place Place, the place used to determine the appropriate child.
      * @return QuadTree, the child QuadTree that contains the place.
-     * Time Complexity: O(1).
-    */
-    private Map2D navigateToChild(Place place) {
-        if (topLeft.bounds.isContains(place))
-            return topLeft;
-        if (topRight.bounds.isContains(place))
-            return topRight;
-        if (lowerLeft.bounds.isContains(place))
-            return lowerLeft;
-        if (lowerRight.bounds.isContains(place))
-            return lowerRight;
-        return null;
+     *         Time Complexity: O(1).
+     */
+    private Map2D navigateToChild(Place place, Map2D current) {
+        double midX = current.bounds.x;
+        double midY = current.bounds.y;
+        boolean isLeft = place.x < midX;
+        boolean isTop = place.y < midY;
+
+        if (isLeft && isTop) {
+            return current.topLeft;
+        } else if (!isLeft && isTop) {
+            return current.topRight;
+        } else if (isLeft) {
+            return current.lowerLeft;
+        } else {
+            return current.lowerRight;
+        }
     }
 
     /**
      * Subdivides the current QuadTree node into four children.
      * Time Complexity: O(1).
-    */
+     */
     public void subdivide() {
         // This method assumes that it is being called on a node that needs to be
         // subdivided.
@@ -163,13 +162,15 @@ public class Map2D {
 
     /**
      * Searches for places within a specified range that match a given service type.
-     * @param range Rectangle, the area to search within.
-     * @param found ArrayList<Place>, the list of found places.
+     * 
+     * @param range       Rectangle, the area to search within.
+     * @param found       ArrayList<Place>, the list of found places.
      * @param serviceType ServiceType, the service type to filter by.
-     * @param capacity int, the maximum number of places to return.
+     * @param capacity    int, the maximum number of places to return.
      * @return ArrayList<Place>, the list of places that match the criteria.
-     * Time Complexity: O(log n), where n is the number of points in the QuadTree.
-    */
+     *         Time Complexity: O(log n), where n is the number of points in the
+     *         QuadTree.
+     */
     public ArrayList<Place> search(Rectangle range, ArrayList<Place> found, ServiceType serviceType, int capacity) {
         if (found == null) {
             found = new ArrayList<>(capacity);
@@ -208,11 +209,13 @@ public class Map2D {
 
     /**
      * Edits a place at a specified location.
+     * 
      * @param x double, the x-coordinate of the place.
      * @param y double, the y-coordinate of the place.
      * @return Place, the edited place, or null if no place was found.
-     * Time Complexity: O(log n + k), where n is the number of nodes and k is the number of operations to edit the place.
-    */
+     *         Time Complexity: O(log n + k), where n is the number of nodes and k
+     *         is the number of operations to edit the place.
+     */
     public Place editPLace(double x, double y) {
         ArrayList<Place> foundPlaces = search(new Rectangle(x, y, 0, 0), null, null, 1);
         if (foundPlaces.size() == 0) {
@@ -260,17 +263,19 @@ public class Map2D {
 
     /**
      * Removes a place at a specified location.
+     * 
      * @param x double, the x-coordinate of the place.
      * @param y double, the y-coordinate of the place.
-     * * @param y double, the y-coordinate of the place.
+     * @param y double, the y-coordinate of the place.
      * @return boolean, true if the place was successfully removed, false otherwise.
-     * Time Complexity: O(log n), where n is the number of nodes in the QuadTree.
-    */
+     *         Time Complexity: O(log n), where n is the number of nodes in the
+     *         QuadTree.
+     */
     public boolean removePlace(int x, int y) {
         // Check if the current node's bounds contain the point
         Map2D current = this;
         Place placeToRemove = null;
-    
+
         // Traverse down the tree to find and remove the place in one go
         while (current != null) {
             for (int i = 0; i < current.points.size(); i++) {
@@ -279,16 +284,16 @@ public class Map2D {
                     break;
                 }
             }
-    
+
             if (placeToRemove != null) {
                 if (current.points.remove(placeToRemove)) {
                     System.out.println("Removing place: " + placeToRemove);
                     return true;
                 }
             }
-    
+
             if (current.isDivided) {
-                current = current.navigateToChild(new Place(0, x, y)); // Navigate using a dummy place
+                current = navigateToChild(new Place(0, x, y), current); // Navigate using a dummy place
             } else {
                 break; // Stop if not divided
             }
