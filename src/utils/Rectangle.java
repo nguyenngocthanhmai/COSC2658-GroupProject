@@ -6,8 +6,8 @@ import models.Place;
  * This class is used for spatial calculations and quad-tree implementations.
  */
 public class Rectangle {
-    public double x, y, width, height; // Center coordinates (x, y) and dimensions (width, height) of the rectangle
-    public double halfWidth, halfHeight;
+    public int x, y, width, height; // Center coordinates (x, y) and dimensions (width, height) of the rectangle
+    public int halfWidth, halfHeight;
     /**
      * Constructs a Rectangle object with specified center coordinates and dimensions.
      * @param x double, the x-coordinate of the rectangle's center.
@@ -15,7 +15,7 @@ public class Rectangle {
      * @param width double, the width of the rectangle.
      * @param height double, the height of the rectangle.
      */
-    public Rectangle(double x, double y, double width, double height) {
+    public Rectangle(int x, int y, int width, int height) {
         this.x = x;
         this.y = y;
         this.height = height;
@@ -53,10 +53,10 @@ public class Rectangle {
      * Time Complexity: O(1).
      */
     public Rectangle subdivide(String quadrant) {
-        double newX = x;
-        double newY = y;
-        double newWidth = width / 2;
-        double newHeight = height / 2;
+        int newX = x;
+        int newY = y;
+        int newWidth = width / 2;
+        int newHeight = height / 2;
 
         switch (quadrant) {
             case "topLeft":

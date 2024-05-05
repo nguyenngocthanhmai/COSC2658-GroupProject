@@ -155,8 +155,8 @@ public class Map2D {
     public void subdivide() {
         // This method assumes that it is being called on a node that needs to be
         // subdivided.
-        double halfWidth = bounds.width / 2;
-        double halfHeight = bounds.height / 2;
+        int halfWidth = bounds.width / 2;
+        int halfHeight = bounds.height / 2;
         topLeft = new Map2D(
                 new Rectangle(bounds.x - halfWidth / 2, bounds.y - halfHeight / 2, halfWidth, halfHeight), capacity);
         topRight = new Map2D(
@@ -224,7 +224,7 @@ public class Map2D {
      *         Time Complexity: O(log n + k), where n is the number of nodes and k
      *         is the number of operations to edit the place.
      */
-    public Place editPLace(double x, double y) {
+    public Place editPLace(int x, int y) {
         ArrayList<Place> foundPlaces = search(new Rectangle(x, y, 0, 0), null, null, 1);
         if (foundPlaces.size() == 0) {
             System.out.println("No place found!");

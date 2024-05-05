@@ -123,13 +123,13 @@ public class GUI {
     */
     private static void searchPlaces(Scanner sc) {
         System.out.print("Please enter the center point x: ");
-        double x = sc.nextDouble();
+        int x = sc.nextInt();
         System.out.print("Please enter the center point y: ");
-        double y = sc.nextDouble();
+        int y = sc.nextInt();
         System.out.print("Please enter the width from center point: ");
-        double w = sc.nextDouble();
+        int w = sc.nextInt();
         System.out.print("Please enter the height from center point: ");
-        double h = sc.nextDouble();
+        int h = sc.nextInt();
         System.out.print("Please enter the capacity (max = 50): ");
         int capac = sc.nextInt();
         if (capac > 50) {
@@ -160,9 +160,9 @@ public class GUI {
     */
     private static void editPlace(Scanner sc) {
         System.out.print("Please enter the x coordinate: ");
-        double x = sc.nextDouble();
+        int x = sc.nextInt();
         System.out.print("Please enter the y coordinate: ");
-        double y = sc.nextDouble();
+        int y = sc.nextInt();
         qt.editPLace(x, y);
     }
 
