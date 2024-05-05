@@ -21,23 +21,23 @@ import utils.Rectangle;
  */
 public class Map2D {
     public static int numberOfTraversal = 0;
-    private final int capacity; // Maximum number of points per quad
+    private final int CAPACITY; // Maximum number of points per quad
     public List<Place> points; // Points in this quad
     private boolean isDivided; // Flag to check if the quad is already divided
-    private final Rectangle bounds; // Spatial bounds of this quad
+    private final Rectangle BOUNDS; // Spatial bounds of this quad
     private Map2D topLeft, topRight, lowerLeft, lowerRight; // Children quads
 
     /**
      * Constructor initializes the quad-tree with specified spatial bounds and
      * capacity.
      * 
-     * @param bounds   The spatial bounds of this quad.
-     * @param capacity The maximum number of points this quad can hold before
+     * @param BOUNDS   The spatial bounds of this quad.
+     * @param CAPACITY The maximum number of points this quad can hold before
      *                 subdividing.
      */
     public Map2D(Rectangle bounds, int capacity) {
-        this.bounds = bounds;
-        this.capacity = capacity;
+        this.BOUNDS = bounds;
+        this.CAPACITY = capacity;
         points = new ArrayList<>(capacity);
     }
 
@@ -102,12 +102,12 @@ public class Map2D {
         Map2D current = this;
 
         while (current != null) {
-            if (!current.bounds.isContains(place)) {
+            if (!current.BOUNDS.isContains(place)) {
                 return false; // The place is out of the bounds of this quad
             }
 
             if (!current.isDivided) {
-                if (current.points.size() < current.capacity) {
+                if (current.points.size() < current.CAPACITY) {
                     current.points.insert(place);
                     return true;
                 } else {
@@ -132,8 +132,8 @@ public class Map2D {
      *         Time Complexity: O(1).
      */
     private Map2D navigateToChild(Place place, Map2D current) {
-        double midX = current.bounds.x;
-        double midY = current.bounds.y;
+        double midX = current.BOUNDS.x;
+        double midY = current.BOUNDS.y;
         boolean isLeft = place.x < midX;
         boolean isTop = place.y < midY;
 
@@ -155,16 +155,16 @@ public class Map2D {
     public void subdivide() {
         // This method assumes that it is being called on a node that needs to be
         // subdivided.
-        int halfWidth = bounds.width / 2;
-        int halfHeight = bounds.height / 2;
+        int halfWidth = BOUNDS.width / 2;
+        int halfHeight = BOUNDS.height / 2;
         topLeft = new Map2D(
-                new Rectangle(bounds.x - halfWidth / 2, bounds.y - halfHeight / 2, halfWidth, halfHeight), capacity);
+                new Rectangle(BOUNDS.x - halfWidth / 2, BOUNDS.y - halfHeight / 2, halfWidth, halfHeight), CAPACITY);
         topRight = new Map2D(
-                new Rectangle(bounds.x + halfWidth / 2, bounds.y - halfHeight / 2, halfWidth, halfHeight), capacity);
+                new Rectangle(BOUNDS.x + halfWidth / 2, BOUNDS.y - halfHeight / 2, halfWidth, halfHeight), CAPACITY);
         lowerLeft = new Map2D(
-                new Rectangle(bounds.x - halfWidth / 2, bounds.y + halfHeight / 2, halfWidth, halfHeight), capacity);
+                new Rectangle(BOUNDS.x - halfWidth / 2, BOUNDS.y + halfHeight / 2, halfWidth, halfHeight), CAPACITY);
         lowerRight = new Map2D(
-                new Rectangle(bounds.x + halfWidth / 2, bounds.y + halfHeight / 2, halfWidth, halfHeight), capacity);
+                new Rectangle(BOUNDS.x + halfWidth / 2, BOUNDS.y + halfHeight / 2, halfWidth, halfHeight), CAPACITY);
         isDivided = true;
     }
 
@@ -184,7 +184,7 @@ public class Map2D {
             found = new ArrayList<>(capacity);
         }
         numberOfTraversal++;
-        if (!range.isIntersects(this.bounds)) {
+        if (!range.isIntersects(this.BOUNDS)) {
             return found;
         }
 

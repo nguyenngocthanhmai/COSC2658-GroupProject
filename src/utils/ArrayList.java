@@ -8,7 +8,7 @@ package utils;
  */
 public class ArrayList<T> implements List<T> {
 	private int size; // The number of elements currently in the list
-    private final T[] items; // Array to store the elements of the list
+    private final T[] ITEMS; // Array to store the elements of the list
 
 	/**
      * Constructs an ArrayList with a specified initial capacity.
@@ -16,7 +16,7 @@ public class ArrayList<T> implements List<T> {
      */
 	public ArrayList(int capacity) {
 		size = 0;
-		items = (T[]) new Object[capacity];
+		ITEMS = (T[]) new Object[capacity];
 	}
 
 	/**
@@ -26,9 +26,9 @@ public class ArrayList<T> implements List<T> {
 	public ArrayList(ArrayList<T> other) {
 		this.size = other.size;
 		@SuppressWarnings("unchecked")
-		T[] temp = (T[]) new Object[other.items.length];
-		this.items = temp;
-        if (other.size >= 0) System.arraycopy(other.items, 0, this.items, 0, other.size);
+		T[] temp = (T[]) new Object[other.ITEMS.length];
+		this.ITEMS = temp;
+        if (other.size >= 0) System.arraycopy(other.ITEMS, 0, this.ITEMS, 0, other.size);
 	}
 
 	/**
@@ -38,7 +38,7 @@ public class ArrayList<T> implements List<T> {
      */
 	private void shiftLeft(int index) {
 		for (int i = index + 1; i < size; i++) {
-			items[i - 1] = items[i];
+			ITEMS[i - 1] = ITEMS[i];
 		}
 	}
 
@@ -63,7 +63,7 @@ public class ArrayList<T> implements List<T> {
 		if (index >= size) {
 			return null;
 		}
-		return items[index];
+		return ITEMS[index];
 	}
 
 	/**
@@ -75,7 +75,7 @@ public class ArrayList<T> implements List<T> {
 		if (index > size) {
 			return false;
 		}
-		items[index] = value;
+		ITEMS[index] = value;
 		size++;
 		return true;
 	}
@@ -113,7 +113,7 @@ public class ArrayList<T> implements List<T> {
 	@Override
 	public boolean remove(T value) {
 		for (int i = 0; i < size; i++) {
-			if (items[i].equals(value)) {
+			if (ITEMS[i].equals(value)) {
 				return removeAt(i);
 			}
 		}

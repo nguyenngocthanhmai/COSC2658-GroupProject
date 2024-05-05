@@ -18,16 +18,16 @@ public enum ServiceType {
     GAS_STATION( 0b010000), 
     HOSPITAL( 0b100000);
 
-    private final int binaryValue; // Stores the binary representation of the service.
-    private static final int numberOfService = 6; // Total number of services available.
-    private static final Random random = new Random(); // Random generator for service selection.
+    private final int BINARY_VALUE; // Stores the binary representation of the service.
+    private static final int NUMBER_OF_SERVICES = 6; // Total number of services available.
+    private static final Random RANDOM = new Random(); // Random generator for service selection.
 
     /**
      * Constructor to initialize the enum constants with their binary values.
      * @param binaryValue The binary value associated with the service type.
     */
     ServiceType(int binaryValue) {
-        this.binaryValue = binaryValue;
+        this.BINARY_VALUE = binaryValue;
     }
 
     /**
@@ -50,7 +50,7 @@ public enum ServiceType {
      * @return The binary representation of a random set of services.
      */
     public static int randomizeServices() {
-        int randomIndex = random.nextInt(numberOfService); // There are 6 service types
+        int randomIndex = RANDOM.nextInt(NUMBER_OF_SERVICES); // There are 6 service types
         return switch (randomIndex) {
             case 0 -> ServiceType.HOTEL.getBinaryValue();
             case 1 -> ServiceType.COFFEE.getBinaryValue();
@@ -68,7 +68,7 @@ public enum ServiceType {
      * @return A list of ServiceType that are represented by the binary combination.
      */
     public static ArrayList<ServiceType> getServicesByBinary(int binaryCombination) {
-        ArrayList<ServiceType> services = new ArrayList<>(numberOfService);
+        ArrayList<ServiceType> services = new ArrayList<>(NUMBER_OF_SERVICES);
         for (ServiceType service : ServiceType.values()) {
             if ((service.getBinaryValue() & binaryCombination) != 0) {
                 services.insert(service);
@@ -95,7 +95,7 @@ public enum ServiceType {
      * @return The binary value of this service type.
      */
     public int getBinaryValue() {
-        return this.binaryValue;
+        return this.BINARY_VALUE;
     }
 
     /**

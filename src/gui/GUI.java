@@ -1,6 +1,5 @@
 package gui;
 import java.util.Scanner;
-
 import enums.ServiceType;
 import maps.Map2D;
 import models.Place;
