@@ -1,3 +1,4 @@
+package utils;
 /**
  * A generic ArrayList implementation that dynamically manages a collection of elements.
  * This class provides methods to manipulate the size and elements of the list, including
@@ -5,8 +6,8 @@
  *
  * @param <T> The type of elements in this ArrayList.
  */
-public class ArrayList<T> {
-    private int size; // The number of elements currently in the list
+public class ArrayList<T> implements List<T> {
+	private int size; // The number of elements currently in the list
     private final T[] items; // Array to store the elements of the list
 
 	/**
@@ -46,16 +47,18 @@ public class ArrayList<T> {
      * @return The number of elements in the ArrayList.
      * Time Complexity: O(1).
      */
+	@Override
 	public int size() {
 		return size;
 	}
 
-	 /**
+	/**
      * Retrieves the element at the specified index.
      * @param index The index of the element to retrieve.
      * @return The element at the specified index, or null if the index is out of bounds.
      * Time Complexity: O(1).
      */
+	@Override
 	public T get(int index) {
 		if (index >= size) {
 			return null;
@@ -64,35 +67,35 @@ public class ArrayList<T> {
 	}
 
 	/**
-	 * Inserts an element at the specified index.
-	 *
-	 * @param index The index where the element should be inserted.
-	 * @param value The element to insert.
-	 */
-	public void insertAt(int index, T value) {
+     * Inserts an element at the specified index.
+     * @param index The index where the element should be inserted.
+     * @param value The element to insert.
+     */
+	private boolean insertAt(int index, T value) {
 		if (index > size) {
-			return;
+			return false;
 		}
 		items[index] = value;
 		size++;
+		return true;
 	}
 
 	/**
-	 * Inserts an element at the end of the ArrayList.
-	 *
-	 * @param value The element to add.
-	 */
-	public void insert(T value) {
-		insertAt(size, value);
+     * Inserts an element at the end of the ArrayList.
+     * @param value The element to add.
+     */
+	@Override
+	public boolean insert(T value) {
+		return insertAt(size, value);
 	}
 
 	/**
      * Removes the element at the specified index.
      * @param index The index of the element to remove.
-     * @return The element that was removed, or null if the index is out of bounds.
+     * @return true if the element was removed, false if the index is out of bounds.
      * Time Complexity: O(n), where n is the number of elements to shift.
      */
-	public boolean removeAt(int index) {
+	private boolean removeAt(int index) {
 		if (index >= size) {
 			return false;
 		}
@@ -107,6 +110,7 @@ public class ArrayList<T> {
      * @return true if the element was removed, false if it was not found.
      * Time Complexity: O(n), where n is the number of elements to shift.
      */
+	@Override
 	public boolean remove(T value) {
 		for (int i = 0; i < size; i++) {
 			if (items[i].equals(value)) {

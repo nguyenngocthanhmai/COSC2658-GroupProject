@@ -1,9 +1,16 @@
+package gui;
 import java.util.Scanner;
+
+import enums.ServiceType;
+import maps.Map2D;
+import models.Place;
+import utils.ArrayList;
+import utils.Rectangle;
 
 /**
  * This class represents the graphical user interface for managing a QuadTree of places.
  * It allows users to insert, remove, search, and edit places in the QuadTree through a console-based menu system.
- */
+*/
 public class GUI {
     private static Map2D qt; // The QuadTree that stores all the places.
 
@@ -28,9 +35,11 @@ public class GUI {
                     break;
                 case "3":
                     searchPlaces(sc);
+                    System.out.println(Map2D.numberOfTraversal);
                     break;
-                case "4":
+                    case "4":
                     editPlace(sc);
+                    System.out.println(Map2D.numberOfTraversal);
                     break;
                 case "5":
                     sc.close();
@@ -45,7 +54,7 @@ public class GUI {
     /**
      * Displays the main menu of operations to the user.
      * Time Complexity: O(1).
-     */
+    */
     private static void displayOperations() {
         printLineSeparator();
         System.out.println("1. Insert a place");
@@ -61,7 +70,7 @@ public class GUI {
      * Inserts a new place into the QuadTree.
      * @param sc Scanner, the scanner to read user input.
      * Time Complexity: O(log n) on average for QuadTree insert operations.
-     */
+    */
     private static void insertPlace(Scanner sc) {
         ArrayList<ServiceType> servicesAtPlace = new ArrayList<>(6);
         while (true) {
@@ -93,7 +102,7 @@ public class GUI {
      * Removes a place from the QuadTree based on coordinates.
      * @param sc Scanner, the scanner to read user input.
      * Time Complexity: O(log n) on average for QuadTree removal operations.
-     */
+    */
     private static void removePlace(Scanner sc) {
         System.out.print("Please enter the x coordinate: ");
         int x = sc.nextInt();
@@ -111,7 +120,7 @@ public class GUI {
      * Searches for places within a specified rectangle and service type in the QuadTree.
      * @param sc Scanner, the scanner to read user input.
      * Time Complexity: O(n) in the worst case, where n is the number of places in the rectangle.
-     */
+    */
     private static void searchPlaces(Scanner sc) {
         System.out.print("Please enter the center point x: ");
         double x = sc.nextDouble();
@@ -148,7 +157,7 @@ public class GUI {
      * Edits a place's details in the QuadTree based on coordinates.
      * @param sc Scanner, the scanner to read user input.
      * Time Complexity: O(log n) on average for QuadTree edit operations.
-     */
+    */
     private static void editPlace(Scanner sc) {
         System.out.print("Please enter the x coordinate: ");
         double x = sc.nextDouble();
@@ -160,7 +169,7 @@ public class GUI {
     /**
      * Prints a line separator to visually separate parts of the interface.
      * Time Complexity: O(1).
-     */
+    */
     public static void printLineSeparator() {
         System.out.println("----------------------------");
     }

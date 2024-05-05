@@ -1,54 +1,62 @@
+package maps;
+
+import utils.List;
 import java.util.Random;
 import java.util.Scanner;
+import enums.ServiceType;
+import gui.GUI;
+import models.Place;
+import utils.ArrayList;
+import utils.Rectangle;
 
 /**
- * Represents a spatial index structure for efficient querying of 2D points.
- * This class uses a quad-tree to manage places within defined bounds.
+ * The Map2D class represents a quad-tree data structure for efficient spatial
+ * indexing and querying of 2D points.
+ * It supports operations such as insertion, search, edit, and removal of places
+ * within a defined 2D space.
+ * Each node of the quad-tree can either be a leaf node with a list of places or
+ * an internal node with four children nodes.
+ * This structure is particularly useful for applications that require rapid
+ * spatial searches such as maps and simulation systems.
  */
 public class Map2D {
+    public static int numberOfTraversal = 0;
     private final int capacity; // Maximum number of points per quad
-    public ArrayList<Place> points; // Points in this quad
+    public List<Place> points; // Points in this quad
     private boolean isDivided; // Flag to check if the quad is already divided
     private final Rectangle bounds; // Spatial bounds of this quad
     private Map2D topLeft, topRight, lowerLeft, lowerRight; // Children quads
-    private Map2D lastInsertedLeaf = null; // Last leaf where a point was inserted
-    private final int depth; // Depth of this node in the tree
 
     /**
-     * Constructor to initialize the QuadTree with bounds and capacity.
+     * Constructor initializes the quad-tree with specified spatial bounds and
+     * capacity.
      * 
-     * @param bounds   Rectangle, the spatial bounds of this quad.
-     * @param capacity int, the maximum number of points this quad can hold before
+     * @param bounds   The spatial bounds of this quad.
+     * @param capacity The maximum number of points this quad can hold before
      *                 subdividing.
      */
     public Map2D(Rectangle bounds, int capacity) {
         this.bounds = bounds;
         this.capacity = capacity;
-        points = new ArrayList<Place>(capacity);
-        this.depth = 0;
+        points = new ArrayList<>(capacity);
     }
 
     /**
-     * Initializes a QuadTree with a specified number of random places. 
+     * Initializes a quad-tree with a specified number of random places.
      * 
-     * @param numberOfPlace int, the number of places to generate and insert.
-     * @return QuadTree, the initialized quad tree.
+     * @param numberOfPlace The number of places to generate and insert.
+     * @return The initialized quad-tree.
      *         Time Complexity: O(n log n), where n is the number of places, due to
      *         insertion in the tree.
-    */
+     */
     public static Map2D initialize(int numberOfPlace) {
         // create a map size 10000000 x 10000000 (10 million)
         Rectangle boundary = new Rectangle(10000000 / 2, 10000000 / 2, 10000000, 10000000);
-        Map2D qt = new Map2D(boundary, 390625);
-        Random rnd = new Random();
+        int desiredDepth = 4;
+        Map2D qt = new Map2D(boundary, calculateIdealCapacity(numberOfPlace, desiredDepth));
         Runtime runtime = Runtime.getRuntime();
         long startTime = System.currentTimeMillis();
-        for (int i = 0; i < numberOfPlace; i++) {
-            int x = rnd.nextInt(10000000);
-            int y = rnd.nextInt(10000000);
-            int services = ServiceType.randomizeServices();
-            qt.insert(new Place(services, x, y));
-        }
+        qt.generateRandomData(numberOfPlace);
         long endTime = System.currentTimeMillis();
         System.out.println("Initializing successfully!");
         System.out.println("Number of children: " + qt.countChildren());
@@ -59,11 +67,11 @@ public class Map2D {
     }
 
     /**
-     * Counts the total number of children nodes in the QuadTree.
+     * Counts the total number of children nodes in the quad-tree.
      * 
-     * @return int, the total number of children nodes.
+     * @return The total number of children nodes.
      *         Time Complexity: O(n), where n is the number of nodes in the
-     *         QuadTree.
+     *         quad-tree.
      */
     public int countChildren() {
         int count = 0; // This node itself is not counted as a child
@@ -83,44 +91,44 @@ public class Map2D {
     }
 
     /**
-     * Inserts a place into the QuadTree.
+     * Inserts a place into the quad-tree.
      * 
-     * @param place Place, the place to insert.
-     * @return boolean, true if the place was successfully inserted, false
-     *         otherwise.
+     * @param place The place to insert.
+     * @return true if the place was successfully inserted, false otherwise.
      *         Time Complexity: O(log n), where n is the number of nodes in the
-     *         QuadTree.
+     *         quad-tree.
      */
     public boolean insert(Place place) {
-        Map2D current = (lastInsertedLeaf != null && lastInsertedLeaf.bounds.isContains(place)
-                && !lastInsertedLeaf.isDivided) ? lastInsertedLeaf : this;
+        Map2D current = this;
 
         while (current != null) {
             if (!current.bounds.isContains(place)) {
-                return false;
-            }
-
-            if (current.points.size() < current.capacity && !current.isDivided) {
-                current.points.insert(place); // Assuming `add` is the correct method to add to ArrayList
-                lastInsertedLeaf = current; // Update last inserted leaf
-                return true;
+                return false; // The place is out of the bounds of this quad
             }
 
             if (!current.isDivided) {
-                current.subdivide();
+                if (current.points.size() < current.capacity) {
+                    current.points.insert(place);
+                    return true;
+                } else {
+                    // Subdivide the current node if it's at capacity and not already divided
+                    current.subdivide();
+                }
             }
 
-            // Inline navigation logic
-            current = navigateToChild(place, current);
+            // Navigate to the appropriate child node after subdivision or if already
+            // divided
+            current = current.navigateToChild(place, current);
         }
         return false;
     }
 
     /**
-     * Navigates to the appropriate child QuadTree based on the place's location.
+     * Navigates to the appropriate child quad-tree based on the place's location.
      * 
-     * @param place Place, the place used to determine the appropriate child.
-     * @return QuadTree, the child QuadTree that contains the place.
+     * @param place   The place used to determine the appropriate child.
+     * @param current The current node from which to navigate.
+     * @return The child quad-tree that contains the place.
      *         Time Complexity: O(1).
      */
     private Map2D navigateToChild(Place place, Map2D current) {
@@ -141,7 +149,7 @@ public class Map2D {
     }
 
     /**
-     * Subdivides the current QuadTree node into four children.
+     * Subdivides the current quad-tree node into four children.
      * Time Complexity: O(1).
      */
     public void subdivide() {
@@ -163,19 +171,19 @@ public class Map2D {
     /**
      * Searches for places within a specified range that match a given service type.
      * 
-     * @param range       Rectangle, the area to search within.
-     * @param found       ArrayList<Place>, the list of found places.
-     * @param serviceType ServiceType, the service type to filter by.
-     * @param capacity    int, the maximum number of places to return.
-     * @return ArrayList<Place>, the list of places that match the criteria.
+     * @param range       The area to search within.
+     * @param found       The list of found places.
+     * @param serviceType The service type to filter by.
+     * @param capacity    The maximum number of places to return.
+     * @return The list of places that match the criteria.
      *         Time Complexity: O(log n), where n is the number of points in the
-     *         QuadTree.
+     *         quad-tree.
      */
     public ArrayList<Place> search(Rectangle range, ArrayList<Place> found, ServiceType serviceType, int capacity) {
         if (found == null) {
             found = new ArrayList<>(capacity);
         }
-
+        numberOfTraversal++;
         if (!range.isIntersects(this.bounds)) {
             return found;
         }
@@ -210,9 +218,9 @@ public class Map2D {
     /**
      * Edits a place at a specified location.
      * 
-     * @param x double, the x-coordinate of the place.
-     * @param y double, the y-coordinate of the place.
-     * @return Place, the edited place, or null if no place was found.
+     * @param x The x-coordinate of the place.
+     * @param y The y-coordinate of the place.
+     * @return The edited place, or null if no place was found.
      *         Time Complexity: O(log n + k), where n is the number of nodes and k
      *         is the number of operations to edit the place.
      */
@@ -264,12 +272,11 @@ public class Map2D {
     /**
      * Removes a place at a specified location.
      * 
-     * @param x double, the x-coordinate of the place.
-     * @param y double, the y-coordinate of the place.
-     * @param y double, the y-coordinate of the place.
-     * @return boolean, true if the place was successfully removed, false otherwise.
+     * @param x The x-coordinate of the place.
+     * @param y The y-coordinate of the place.
+     * @return true if the place was successfully removed, false otherwise.
      *         Time Complexity: O(log n), where n is the number of nodes in the
-     *         QuadTree.
+     *         quad-tree.
      */
     public boolean removePlace(int x, int y) {
         // Check if the current node's bounds contain the point
@@ -303,12 +310,51 @@ public class Map2D {
         // If not found and not divided, return null
     }
 
-    @Override
-    public String toString() {
-        return "Quadtree\n" +
-                "boundary: " + bounds + ", " +
-                "capacity: " + capacity + ", " +
-                "places: " + points + ", " +
-                "depth: " + depth;
+    /**
+     * Generates random data and populates the quad-tree with places.
+     * This method divides the map into four quadrants and evenly distributes a specified number of places across these quadrants.
+     * Each place is assigned random coordinates within its designated quadrant and a random set of services.
+     * If the total number of places is not divisible by four, the remainder is distributed randomly across the entire map.
+     *
+     * @param numberOfPlace The total number of places to generate and insert into the quad-tree.
+     * Time Complexity: O(n log n), where n is the number of places.
+     * The time complexity is primarily due to the insertion operation in the quad-tree, which has a complexity of O(log n) per insertion.
+     * Since we are inserting 'n' places, the overall complexity becomes O(n log n).
+    */
+    public void generateRandomData(int numberOfPlace){
+        Random rnd = new Random(); // Create a Random object for generating random numbers.
+    
+        int quarterPlaces = numberOfPlace / 4; // Divide the total number of places by 4 to distribute them evenly across four quadrants.
+    
+        // Loop through each of the four quadrants.
+        for (int quadrant = 0; quadrant < 4; quadrant++) {
+            // Generate places for each quadrant.
+            for (int i = 0; i < quarterPlaces; i++) {
+                // Calculate the x-coordinate. Offset is added to place points in the right half of the map for the second and fourth quadrants.
+                int x = rnd.nextInt(5000000) + (quadrant % 2) * 5000000;
+                // Calculate the y-coordinate. Offset is added to place points in the bottom half of the map for the third and fourth quadrants.
+                int y = rnd.nextInt(5000000) + (quadrant / 2) * 5000000;
+                // Randomly generate a set of services for the place.
+                int services = ServiceType.randomizeServices();
+                // Insert the new place with the generated coordinates and services into the quad-tree.
+                insert(new Place(services, x, y));
+            }
+        }
+    
+        // If the total number of places is not perfectly divisible by 4, handle the remainder.
+        // This loop adds the remaining places randomly across the entire map.
+        for (int i = 0; i < numberOfPlace % 4; i++) {
+            // Generate random x and y coordinates without any quadrant-specific offset.
+            int x = rnd.nextInt(10000000);
+            int y = rnd.nextInt(10000000);
+            // Randomly generate a set of services for the place.
+            int services = ServiceType.randomizeServices();
+            // Insert the new place with the generated coordinates and services into the quad-tree.
+            insert(new Place(services, x, y));
+        }
+    }
+
+    public static int calculateIdealCapacity(int totalPlaces, int desiredDepth) {
+        return totalPlaces / (int) Math.pow(4, desiredDepth);
     }
 }

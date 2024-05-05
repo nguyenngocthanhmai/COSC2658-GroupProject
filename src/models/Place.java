@@ -1,17 +1,22 @@
+package models;
+import enums.ServiceType;
+import utils.ArrayList;
+
 /**
  * Represents a geographical location with associated services.
  * This class manages services at a specific coordinate (x, y).
+ * It allows for adding, removing, and checking services using a binary representation.
  */
 public class Place {
-    int service; // List of services available at this place
-    int x; // X-coordinate of the place
-    int y; // Y-coordinate of the place
+    public int service; // Binary representation of services available at this place
+    public int x; // X-coordinate of the place
+    public int y; // Y-coordinate of the place
 
     /**
      * Constructor to initialize the Place with services and coordinates.
-     * @param service ArrayList of ServiceType, the services available at this place.
-     * @param x double, the x-coordinate of this place.
-     * @param y double, the y-coordinate of this place.
+     * @param service int, the binary representation of services available at this place.
+     * @param x int, the x-coordinate of this place.
+     * @param y int, the y-coordinate of this place.
      */
     public Place(int service, int x, int y) {
         this.service = service;
@@ -20,9 +25,9 @@ public class Place {
     }
 
     /**
-     * Prints all services available at this place.
+     * Prints all services available at this place by converting the binary representation to a list of services.
      * Time Complexity: O(n), where n is the number of services.
-     */
+    */
     public void printServices(){
         ArrayList<ServiceType> services = ServiceType.getServicesByBinary(service);
         for (int i = 0; i < services.size(); i++) {
@@ -41,10 +46,10 @@ public class Place {
     }
 
     /**
-     * Removes a specified service from the place.
+     * Removes a specified service from the place by modifying the binary representation.
      * @param serviceType ServiceType, the service to be removed.
      * @return boolean, true if the service was removed, false otherwise.
-     * Time Complexity: O(n), where n is the number of services (due to contains and remove operations).
+     * Time Complexity: O(1), as it involves a single bitwise operation.
      */
     public boolean removeService(ServiceType serviceType) {
         int serviceBit = serviceType.getBinaryValue();
@@ -56,10 +61,10 @@ public class Place {
     }
 
     /**
-     * Adds a new service to the place if it does not already exist.
+     * Adds a new service to the place if it does not already exist by updating the binary representation.
      * @param serviceType ServiceType, the service to add.
      * @return boolean, true if the service was added, false if it already exists.
-     * Time Complexity: O(n), where n is the number of services (due to contains check).
+     * Time Complexity: O(1), as it involves a single bitwise operation.
      */
     public boolean addService(ServiceType serviceType) {
         int serviceBit = serviceType.getBinaryValue();
@@ -72,10 +77,10 @@ public class Place {
     }
 
     /**
-     * Checks if a specific service is available at this place.
+     * Checks if a specific service is available at this place by examining the binary representation.
      * @param serviceType ServiceType, the service to check for.
      * @return boolean, true if the service is available, false otherwise.
-     * Time Complexity: O(n), where n is the number of services.
+     * Time Complexity: O(1), as it involves a single bitwise operation.
      */
     public boolean hasService(ServiceType serviceType) {
         int serviceBit = serviceType.getBinaryValue();
@@ -104,7 +109,7 @@ public class Place {
     }
 
     /**
-     * Compares the given coordinates with the place's coordinates.
+     * Compares the given coordinates with the place's coordinates to check for equality.
      * @param a double, the x-coordinate to compare.
      * @param b double, the y-coordinate to compare.
      * @return boolean, true if both coordinates match, false otherwise.

@@ -1,10 +1,13 @@
+package utils;
+import models.Place;
+
 /**
  * Represents a rectangle in a 2D space with methods to check containment, intersection, and subdivision.
  * This class is used for spatial calculations and quad-tree implementations.
  */
 public class Rectangle {
-    double x, y, width, height; // Center coordinates (x, y) and dimensions (width, height) of the rectangle
-    double halfWidth, halfHeight;
+    public double x, y, width, height; // Center coordinates (x, y) and dimensions (width, height) of the rectangle
+    public double halfWidth, halfHeight;
     /**
      * Constructs a Rectangle object with specified center coordinates and dimensions.
      * @param x double, the x-coordinate of the rectangle's center.

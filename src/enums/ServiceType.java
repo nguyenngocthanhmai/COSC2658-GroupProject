@@ -1,11 +1,16 @@
+package enums;
 import java.util.Random;
+
+import gui.GUI;
+import utils.ArrayList;
 /**
  * Enum representing different types of services that can be offered at a
- * location.
- * This enum includes methods for retrieving service types by index and listing
- * all service types.
+ * location. This enum includes methods for retrieving service types by index,
+ * generating random service combinations, converting between service lists and
+ * binary representations, and listing all service types.
  */
 public enum ServiceType {
+    // Enum constants, each representing a service with a unique binary value.
     HOTEL( 0b000001), 
     COFFEE( 0b000010), 
     RESTAURANT( 0b000100), 
@@ -13,23 +18,24 @@ public enum ServiceType {
     GAS_STATION( 0b010000), 
     HOSPITAL( 0b100000);
 
-    private final int binaryValue;
-    private static final int numberOfService = 6;
-    private static final Random random = new Random();
+    private final int binaryValue; // Stores the binary representation of the service.
+    private static final int numberOfService = 6; // Total number of services available.
+    private static final Random random = new Random(); // Random generator for service selection.
 
+    /**
+     * Constructor to initialize the enum constants with their binary values.
+     * @param binaryValue The binary value associated with the service type.
+    */
     ServiceType(int binaryValue) {
         this.binaryValue = binaryValue;
     }
 
     /**
      * Retrieves a service type based on its ordinal index.
-     * 
-     * @param index int, the index of the service type in the enum.
-     * @return ServiceType, the service type at the specified index.
+     * @param index The index of the service type in the enum.
+     * @return The service type at the specified index.
      * @throws IllegalArgumentException if the index is out of bounds.
-     * Time Complexity: O(1), as it directly
-     * accesses an array element.
-     */
+    */
     public static ServiceType getServiceByIndex(int index) {
         ServiceType[] services = ServiceType.values();
         if (index < 0 || index >= services.length) {
@@ -41,8 +47,7 @@ public enum ServiceType {
     /**
      * Randomly generates an integer representing a set of services.
      * Each bit in the integer corresponds to a different service.
-     * 
-     * @return int, the binary representation of a random set of services.
+     * @return The binary representation of a random set of services.
      */
     public static int randomizeServices() {
         int randomIndex = random.nextInt(numberOfService); // There are 6 service types
@@ -57,6 +62,11 @@ public enum ServiceType {
         };
     }
 
+    /**
+     * Retrieves a list of ServiceType based on a binary combination.
+     * @param binaryCombination The binary combination of services.
+     * @return A list of ServiceType that are represented by the binary combination.
+     */
     public static ArrayList<ServiceType> getServicesByBinary(int binaryCombination) {
         ArrayList<ServiceType> services = new ArrayList<>(numberOfService);
         for (ServiceType service : ServiceType.values()) {
@@ -69,8 +79,8 @@ public enum ServiceType {
 
     /**
      * Converts a list of ServiceType into a binary representation.
-     * @param services ArrayList<ServiceType>, the list of services.
-     * @return int, the binary combination of the services.
+     * @param services The list of services.
+     * @return The binary combination of the services.
      */
     public static int servicesToBinary(ArrayList<ServiceType> services) {
         int binaryRepresentation = 0;
@@ -80,13 +90,16 @@ public enum ServiceType {
         return binaryRepresentation;
     }
 
+    /**
+     * Gets the binary value of the service type.
+     * @return The binary value of this service type.
+     */
     public int getBinaryValue() {
         return this.binaryValue;
     }
 
     /**
      * Prints all available service types to the standard output.
-     * Time Complexity: O(n), where n is the number of service types.
      */
     public static void getAllServices() {
         GUI.printLineSeparator();
@@ -99,9 +112,7 @@ public enum ServiceType {
 
     /**
      * Provides a custom string representation of the service type.
-     * 
-     * @return String, the custom formatted name of the service type.
-     *         Time Complexity: O(1), as it performs simple string operations.
+     * @return The custom formatted name of the service type.
      */
     @Override
     public String toString() {
