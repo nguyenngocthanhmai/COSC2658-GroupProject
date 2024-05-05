@@ -20,7 +20,6 @@ import utils.Rectangle;
  * spatial searches such as maps and simulation systems.
  */
 public class Map2D {
-    public static int numberOfTraversal = 0;
     private final int CAPACITY; // Maximum number of points per quad
     public List<Place> points; // Points in this quad
     private boolean isDivided; // Flag to check if the quad is already divided
@@ -183,7 +182,6 @@ public class Map2D {
         if (found == null) {
             found = new ArrayList<>(capacity);
         }
-        numberOfTraversal++;
         if (!range.isIntersects(this.BOUNDS)) {
             return found;
         }

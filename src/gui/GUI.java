@@ -34,11 +34,9 @@ public class GUI {
                     break;
                 case "3":
                     searchPlaces(sc);
-                    System.out.println(Map2D.numberOfTraversal);
                     break;
                     case "4":
                     editPlace(sc);
-                    System.out.println(Map2D.numberOfTraversal);
                     break;
                 case "5":
                     sc.close();
