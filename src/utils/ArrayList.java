@@ -42,7 +42,7 @@ public class ArrayList<T> implements List<T> {
 		}
 	}
 
-	/**
+	/**	
      * Returns the number of elements in this ArrayList.
      * @return The number of elements in the ArrayList.
      * Time Complexity: O(1).
