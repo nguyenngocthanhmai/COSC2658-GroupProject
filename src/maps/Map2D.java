@@ -51,7 +51,7 @@ public class Map2D {
     public static Map2D initialize(int numberOfPlace) {
         // create a map size 10000000 x 10000000 (10 million)
         Rectangle boundary = new Rectangle(10000000 / 2, 10000000 / 2, 10000000, 10000000);
-        int desiredDepth = 4;
+        int desiredDepth = 4; //You can change this number (do at your own risk). We highly recommend the depth will around 4-6
         Map2D qt = new Map2D(boundary, calculateIdealCapacity(numberOfPlace, desiredDepth));
         Runtime runtime = Runtime.getRuntime();
         long startTime = System.currentTimeMillis();
@@ -59,6 +59,7 @@ public class Map2D {
         long endTime = System.currentTimeMillis();
         System.out.println("Initializing successfully!");
         System.out.println("Number of children: " + qt.countChildren());
+        System.out.println("Depth of the tree (index-0): " + (qt.calculateDepth()-1));
         System.out.println("Time taken for initializing: " + (endTime - startTime) + " ms");
         long memoryUsed = (runtime.totalMemory() - runtime.freeMemory()) / 1024 / 1024; // Convert to megabytes
         System.out.println("Memory Used: " + memoryUsed + " MB");
@@ -310,36 +311,49 @@ public class Map2D {
 
     /**
      * Generates random data and populates the quad-tree with places.
-     * This method divides the map into four quadrants and evenly distributes a specified number of places across these quadrants.
-     * Each place is assigned random coordinates within its designated quadrant and a random set of services.
-     * If the total number of places is not divisible by four, the remainder is distributed randomly across the entire map.
+     * This method divides the map into four quadrants and evenly distributes a
+     * specified number of places across these quadrants.
+     * Each place is assigned random coordinates within its designated quadrant and
+     * a random set of services.
+     * If the total number of places is not divisible by four, the remainder is
+     * distributed randomly across the entire map.
      *
-     * @param numberOfPlace The total number of places to generate and insert into the quad-tree.
-     * Time Complexity: O(n log n), where n is the number of places.
-     * The time complexity is primarily due to the insertion operation in the quad-tree, which has a complexity of O(log n) per insertion.
-     * Since we are inserting 'n' places, the overall complexity becomes O(n log n).
-    */
-    public void generateRandomData(int numberOfPlace){
+     * @param numberOfPlace The total number of places to generate and insert into
+     *                      the quad-tree.
+     *                      Time Complexity: O(n log n), where n is the number of
+     *                      places.
+     *                      The time complexity is primarily due to the insertion
+     *                      operation in the quad-tree, which has a complexity of
+     *                      O(log n) per insertion.
+     *                      Since we are inserting 'n' places, the overall
+     *                      complexity becomes O(n log n).
+     */
+    public void generateRandomData(int numberOfPlace) {
         Random rnd = new Random(); // Create a Random object for generating random numbers.
-    
-        int quarterPlaces = numberOfPlace / 4; // Divide the total number of places by 4 to distribute them evenly across four quadrants.
-    
+
+        int quarterPlaces = numberOfPlace / 4; // Divide the total number of places by 4 to distribute them evenly
+                                               // across four quadrants.
+
         // Loop through each of the four quadrants.
         for (int quadrant = 0; quadrant < 4; quadrant++) {
             // Generate places for each quadrant.
             for (int i = 0; i < quarterPlaces; i++) {
-                // Calculate the x-coordinate. Offset is added to place points in the right half of the map for the second and fourth quadrants.
+                // Calculate the x-coordinate. Offset is added to place points in the right half
+                // of the map for the second and fourth quadrants.
                 int x = rnd.nextInt(5000000) + (quadrant % 2) * 5000000;
-                // Calculate the y-coordinate. Offset is added to place points in the bottom half of the map for the third and fourth quadrants.
+                // Calculate the y-coordinate. Offset is added to place points in the bottom
+                // half of the map for the third and fourth quadrants.
                 int y = rnd.nextInt(5000000) + (quadrant / 2) * 5000000;
                 // Randomly generate a set of services for the place.
                 int services = ServiceType.randomizeServices();
-                // Insert the new place with the generated coordinates and services into the quad-tree.
+                // Insert the new place with the generated coordinates and services into the
+                // quad-tree.
                 insert(new Place(services, x, y));
             }
         }
-    
-        // If the total number of places is not perfectly divisible by 4, handle the remainder.
+
+        // If the total number of places is not perfectly divisible by 4, handle the
+        // remainder.
         // This loop adds the remaining places randomly across the entire map.
         for (int i = 0; i < numberOfPlace % 4; i++) {
             // Generate random x and y coordinates without any quadrant-specific offset.
@@ -347,8 +361,29 @@ public class Map2D {
             int y = rnd.nextInt(10000000);
             // Randomly generate a set of services for the place.
             int services = ServiceType.randomizeServices();
-            // Insert the new place with the generated coordinates and services into the quad-tree.
+            // Insert the new place with the generated coordinates and services into the
+            // quad-tree.
             insert(new Place(services, x, y));
+        }
+    }
+
+    /**
+     * Calculates the depth of the quad-tree.
+     * 
+     * @return The depth of the quad-tree.
+     *         Time Complexity: O(n), where n is the depth of the tree.
+     */
+    public int calculateDepth() {
+        if (!isDivided) {
+            return 1; // Leaf node depth is 1
+        } else {
+            int depthTopLeft = topLeft != null ? topLeft.calculateDepth() : 0;
+            int depthTopRight = topRight != null ? topRight.calculateDepth() : 0;
+            int depthLowerLeft = lowerLeft != null ? lowerLeft.calculateDepth() : 0;
+            int depthLowerRight = lowerRight != null ? lowerRight.calculateDepth() : 0;
+
+            // Return the maximum depth of the children plus one for the current node
+            return 1 + Math.max(Math.max(depthTopLeft, depthTopRight), Math.max(depthLowerLeft, depthLowerRight));
         }
     }
 

@@ -19,14 +19,14 @@ public class Benchmark {
                 System.out.println("##########################################################################");
                 System.out.println("Number of nodes: " + String.format("%,d", numberOfNode));
                 for (int i = 1; i < 7; i++) {
-                    Runtime runtime = Runtime.getRuntime();
                     Rectangle boundary = new Rectangle(10000000 / 2, 10000000 / 2, 10000000, 10000000);
                     int desiredDepth = i;
                     Map2D qt = new Map2D(boundary, Map2D.calculateIdealCapacity(numberOfNode, desiredDepth));
                     long startTime = System.currentTimeMillis();
+                    Runtime runtime = Runtime.getRuntime();
                     qt.generateRandomData(numberOfNode);
                     long endTime = System.currentTimeMillis();
-                    long memoryUsage = (runtime.totalMemory() - runtime.freeMemory()) / 1000000;
+                    long memoryUsage = (runtime.totalMemory() - runtime.freeMemory()) / 1024 / 1024;
                     long initializationTime = endTime - startTime;
 
                     System.out.println("------------------------------------");
