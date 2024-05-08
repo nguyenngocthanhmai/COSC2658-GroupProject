@@ -67,40 +67,17 @@ public class ArrayList<T> implements List<T> {
 	}
 
 	/**
-     * Inserts an element at the specified index.
-     * @param index The index where the element should be inserted.
-     * @param value The element to insert.
-     */
-	private boolean insertAt(int index, T value) {
-		if (index > size) {
-			return false;
-		}
-		ITEMS[index] = value;
-		size++;
-		return true;
-	}
-
-	/**
      * Inserts an element at the end of the ArrayList.
      * @param value The element to add.
+	 * Time Complexity: O(1).
      */
 	@Override
 	public boolean insert(T value) {
-		return insertAt(size, value);
-	}
-
-	/**
-     * Removes the element at the specified index.
-     * @param index The index of the element to remove.
-     * @return true if the element was removed, false if the index is out of bounds.
-     * Time Complexity: O(n), where n is the number of elements to shift.
-     */
-	private boolean removeAt(int index) {
-		if (index >= size) {
+		if (size == ITEMS.length) {
 			return false;
 		}
-		shiftLeft(index);
-		size--;
+		ITEMS[size] = value;
+		size++;
 		return true;
 	}
 
@@ -114,7 +91,9 @@ public class ArrayList<T> implements List<T> {
 	public boolean remove(T value) {
 		for (int i = 0; i < size; i++) {
 			if (ITEMS[i].equals(value)) {
-				return removeAt(i);
+				shiftLeft(i);
+				size--;
+				return true;
 			}
 		}
 		return false;
