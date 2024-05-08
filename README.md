@@ -19,6 +19,11 @@ For problem description, see [Assessment Details](AssessmentDetails.md).
 
 ```
 .
+├── .idea/
+├── .vscode/
+├── bin/
+├── lib/
+├── out/
 ├── src/
 │   ├── benchMark/
 │   │   ├── benchMark.ipynb
@@ -32,12 +37,16 @@ For problem description, see [Assessment Details](AssessmentDetails.md).
 │   │   ├── Map2D.java
 │   ├── models/
 │   │   ├── Place.java
+│   ├── test/
+│   │   ├── Map2DTest.java
 │   ├── utils/
 │   │   ├── ArrayList.java
 │   │   ├── List.java
 │   │   ├── Rectangle.java
 │   ├── Main.java
 ├── AssessmentDetails.md
+├── COSC2658_GroupProject.iml
+├── pom.xml
 ├── README.md
 ├── requirements.txt
 ```
@@ -66,11 +75,18 @@ The project is organized into several directories and files within the `src/` fo
   - `List.java`: Interface for list implementations.
   - `Rectangle.java`: Class representing a rectangle shape.
 
-- `AssessmentDetails.md`: Markdown file with detailed assessment information for the project.
+- `test/`: Contains test classes.
+  - `Map2DTest.java`: Test class for `Map2D`.
+
 - `Main.java`: Main entry point for the Java application.
+
+- `AssessmentDetails.md`: Markdown file with detailed assessment information for the project.
+- `COSC2658_GroupProject.iml`: IntelliJ IDEA project file.
+- `pom.xml`: Maven project file.
 - `README.md`: This file, containing project documentation.
 - `requirements.txt`: Specifies the Python packages required for the project.
 
+| Requirement                        | Version |
 |:-----------------------------------|:-------:|
 | [Git](https://git-scm.com)         | latest  |
 | [Maven](https://maven.apache.org/) |  4.0.0  |
@@ -88,7 +104,7 @@ Extension requirements for building and running Java classes:
 | [Extension Pack for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-pack) | latest  |
 | [Test Runner for Java](https://marketplace.visualstudio.com/items?itemName=vscjava.vscode-java-test)    | latest  |
 
-Additional extensions for viewing data visualization in `notebooks`:
+Additional extensions for viewing data visualization in `benchMark`:
 
 | Requirement                                                                       | Version |
 |:----------------------------------------------------------------------------------|:-------:|
@@ -107,7 +123,7 @@ To run tests, you need to install JUnit Maven dependency:
 $ mvn install
 ```
 
-If you are viewing and running Python scripts in `notebooks`, install the required Python packages:
+If you are viewing and running Python scripts in `benchMark`, install the required Python packages:
 
 ```bash
 $ pip install -r ./requirements.txt
@@ -119,7 +135,7 @@ $ pip install -r ./requirements.txt
 |:-----------------------------------------------------------------------------------|:-------:|
 | [Python Plugin for IntelliJ IDEA](https://plugins.jetbrains.com/plugin/631-python) | latest  |
 
-**Note:** The above requirement is needed only for viewing data visualization in `notebooks`. All Java functionalities and toolchain integrations are IDE's built-ins, so no other plugins are required.
+**Note:** The above requirement is needed only for viewing data visualization in `benchMark`. All Java functionalities and toolchain integrations are IDE's built-ins, so no other plugins are required.
 
 To properly setup OpenJDK 17 to work with IntelliJ IDEA toolchain, refer to this documentation: [IntelliJ IDEA - SDKs](https://www.jetbrains.com/help/idea/sdk.html#change-module-sdk).
 
@@ -131,7 +147,7 @@ $ mvn install
 
 To enable and run Python functionality within IntelliJ IDEA, refer to the following documentation: [Python in IntelliJ IDEA](https://www.jetbrains.com/help/idea/python.html).
 
-If you are viewing and running Python scripts in `notebooks`, install the required Python packages:
+If you are viewing and running Python scripts in `benchMark`, install the required Python packages:
 
 ```bash
 $ pip install -r ./requirements.txt
