@@ -153,4 +153,4 @@ Refer to [IntelliJ IDEA - Getting Started](https://www.jetbrains.com/help/idea/g
 
 ## Video Demonstration
 
-Video available on YouTube: [Link]().
+Video available on YouTube: [Link](https://youtu.be/AJQjJrdF0H0?si=t1H69b4UhB6mGTdU).
